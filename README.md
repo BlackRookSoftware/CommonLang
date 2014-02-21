@@ -4,7 +4,7 @@ Copyright (c) 2009-2014 Black Rook Software. All rights reserved.
 [http://blackrooksoftware.com/projects.htm?name=commonlang](http://blackrooksoftware.com/projects.htm?name=commonlang)  
 [https://github.com/BlackRookSoftware/CommonLang](https://github.com/BlackRookSoftware/CommonLang)
 
-### Dependent Libraries
+### Required Libraries
 
 Black Rook Commons 2.14.0+  
 [https://github.com/BlackRookSoftware/Common](https://github.com/BlackRookSoftware/Common)
