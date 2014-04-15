@@ -18,6 +18,7 @@ import com.blackrook.commons.linkedlist.Queue;
  * characters enclosed in quotes as one token. In those quoted strings, the common
  * escape characters may be used.
  * @author Matthew Tropiano
+ * @deprecated Moved to Commons library for version 2.17.0 as com.blackrook.commons.CommonTokenizer.
  */
 public class CTokenizer implements Iterable<String>
 {

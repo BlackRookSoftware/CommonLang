@@ -1,5 +1,10 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
+Slated for 2.5.0
+================
+
+- Deprecated: CTokenizer - moved to Commons project as CommonTokenizer.
+
 Changed in 2.4.0
 ================
 
