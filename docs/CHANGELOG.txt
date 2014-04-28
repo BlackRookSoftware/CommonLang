@@ -1,8 +1,10 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
-Slated for 2.5.0
+Changed in 2.5.0
 ================
 
+- Requires: Java 7 or higher.
+- Requires: Commons 2.17.0.
 - Deprecated: CTokenizer - moved to Commons project as CommonTokenizer.
 
 Changed in 2.4.0
