@@ -95,7 +95,7 @@ public class JSONReader
 			addKeyword("null", TYPE_NULL);
 			
 			setDecimalSeparator('.');
-	}}; 
+		}}; 
 		
 		JSONLexer(Reader in)
 		{
