@@ -9,6 +9,7 @@ package com.blackrook.lang.json;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 
 import com.blackrook.commons.Common;
@@ -41,6 +42,19 @@ public final class JSONWriter
 
 	/**
 	 * Writes a JSONObject out to the following output stream.
+	 * @param jsonObject the object to write.
+	 * @param writer the writer to write to.
+	 * @since 2.5.1
+	 */
+	public static String writeJSONString(JSONObject jsonObject) throws IOException
+	{
+		StringWriter sw = new StringWriter();
+		writeJSON(jsonObject, sw);
+		return sw.toString();
+	}
+
+	/**
+	 * Writes a JSONObject out to the following output stream.
 	 * @param object the object to write.
 	 * @param out the output stream to write to.
 	 * @since 2.5.1
@@ -59,6 +73,19 @@ public final class JSONWriter
 	public static void writeJSON(Object object, Writer writer) throws IOException
 	{
 		writeJSON(JSONObject.create(object), writer);
+	}
+
+	/**
+	 * Writes a JSONObject out to the following output stream.
+	 * @param object the object to write.
+	 * @param writer the writer to write to.
+	 * @since 2.5.1
+	 */
+	public static String writeJSONString(Object object, Writer writer) throws IOException
+	{
+		StringWriter sw = new StringWriter();
+		writeJSON(JSONObject.create(object), sw);
+		return sw.toString();
 	}
 
 	/**
