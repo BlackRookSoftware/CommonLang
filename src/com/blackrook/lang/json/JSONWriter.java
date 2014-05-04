@@ -43,7 +43,6 @@ public final class JSONWriter
 	/**
 	 * Writes a JSONObject out to the following output stream.
 	 * @param jsonObject the object to write.
-	 * @param writer the writer to write to.
 	 * @since 2.5.1
 	 */
 	public static String writeJSONString(JSONObject jsonObject) throws IOException
@@ -78,10 +77,9 @@ public final class JSONWriter
 	/**
 	 * Writes a JSONObject out to the following output stream.
 	 * @param object the object to write.
-	 * @param writer the writer to write to.
 	 * @since 2.5.1
 	 */
-	public static String writeJSONString(Object object, Writer writer) throws IOException
+	public static String writeJSONString(Object object) throws IOException
 	{
 		StringWriter sw = new StringWriter();
 		writeJSON(JSONObject.create(object), sw);
