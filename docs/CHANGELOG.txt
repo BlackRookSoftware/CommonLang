@@ -1,5 +1,11 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
+Changed in 2.5.1
+================
+
+- Added: Additional JSONWriter and JSONReader methods for conveniently reading
+  JSON and converting them to objects.
+
 Changed in 2.5.0
 ================
 

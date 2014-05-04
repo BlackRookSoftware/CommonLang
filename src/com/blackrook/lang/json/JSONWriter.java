@@ -40,6 +40,28 @@ public final class JSONWriter
 	}
 
 	/**
+	 * Writes a JSONObject out to the following output stream.
+	 * @param object the object to write.
+	 * @param out the output stream to write to.
+	 * @since 2.5.1
+	 */
+	public static void writeJSON(Object object, OutputStream out) throws IOException
+	{
+		writeJSON(JSONObject.create(object), out);
+	}
+
+	/**
+	 * Writes a JSONObject out to the following output stream.
+	 * @param object the object to write.
+	 * @param writer the writer to write to.
+	 * @since 2.5.1
+	 */
+	public static void writeJSON(Object object, Writer writer) throws IOException
+	{
+		writeJSON(JSONObject.create(object), writer);
+	}
+
+	/**
 	 * Writer context.
 	 */
 	private static class WriterContext
