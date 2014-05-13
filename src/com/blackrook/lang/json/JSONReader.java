@@ -38,7 +38,7 @@ public class JSONReader
 	}
 
 	/**
-	 * Reads in a new JSONObject from a reader.
+	 * Reads in a new JSONObject from a Reader.
 	 * This does not close the stream after reading, and reads the first structure
 	 * that it finds.
 	 * @param reader the reader to read from.
@@ -59,6 +59,47 @@ public class JSONReader
 	public static JSONObject readJSON(String data) throws IOException
 	{
 		return readJSON(new StringReader(data));
+	}
+
+	/**
+	 * Reads in a new object from an InputStream.
+	 * This does not close the stream after reading, and reads the first structure
+	 * that it finds and returns it as a new object converted from the JSON.
+	 * @param in the input stream to read from.
+	 * @throws IOException if the stream can't be read, or an error occurs.
+	 * @throws JSONConversionException if a parsing error occurs, or the JSON is malformed.
+	 * @since 2.5.1
+	 */
+	public static <T> T readJSON(Class<T> clazz, InputStream in) throws IOException
+	{
+		return readJSON(in).newObject(clazz);
+	}
+
+	/**
+	 * Reads in a new object from a Reader.
+	 * This does not close the stream after reading, and reads the first structure
+	 * that it finds and returns it as a new object converted from the JSON.
+	 * @param reader the reader to read from.
+	 * @throws IOException if the stream can't be read, or a read error occurs.
+	 * @throws JSONConversionException if a parsing error occurs, or the JSON is malformed.
+	 * @since 2.5.1
+	 */
+	public static <T> T readJSON(Class<T> clazz, Reader reader) throws IOException
+	{
+		return readJSON(reader).newObject(clazz);
+	}
+
+	/**
+	 * Reads in a new object from a string of characters and returns it as a 
+	 * new object converted from the JSON.
+	 * @param data the string to read.
+	 * @throws IOException if the string can't be read, or a read error occurs.
+	 * @throws JSONConversionException if a parsing error occurs, or the JSON is malformed.
+	 * @since 2.5.1
+	 */
+	public static <T> T readJSON(Class<T> clazz, String data) throws IOException
+	{
+		return readJSON(data).newObject(clazz);
 	}
 
 	/**
@@ -95,7 +136,7 @@ public class JSONReader
 			addKeyword("null", TYPE_NULL);
 			
 			setDecimalSeparator('.');
-	}}; 
+		}}; 
 		
 		JSONLexer(Reader in)
 		{
