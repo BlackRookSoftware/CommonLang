@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.blackrook.commons.AbstractChainedHashMap;
+import com.blackrook.commons.AbstractMap;
 import com.blackrook.commons.ObjectPair;
 import com.blackrook.commons.Reflect;
 import com.blackrook.lang.json.annotation.JSONIgnore;
@@ -41,10 +41,10 @@ public class JSONDefaultConverter implements JSONConverter<Object>
 			}
 			return out;
 		}
-		else if (object instanceof AbstractChainedHashMap<?, ?>)
+		else if (object instanceof AbstractMap<?, ?>)
 		{
 			JSONObject out = JSONObject.createEmptyObject();
-			for (ObjectPair<?, ?> entry : (AbstractChainedHashMap<?, ?>)object)
+			for (ObjectPair<?, ?> entry : (AbstractMap<?, ?>)object)
 			{
 				String key = String.valueOf(entry.getKey());
 				out.addMember(key, entry.getValue());
