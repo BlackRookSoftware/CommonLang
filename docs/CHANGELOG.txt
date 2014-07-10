@@ -1,6 +1,6 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
-Slated for 2.6.0
+Changed in 2.6.0
 ================
 
 - Requires: Commons 2.19.0
