@@ -1,6 +1,6 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
-Slated for 2.6.1
+Changed in 2.6.1
 ================
 
 - Changed/Fixed: JSONDefaultConverter should not have exported static fields.
