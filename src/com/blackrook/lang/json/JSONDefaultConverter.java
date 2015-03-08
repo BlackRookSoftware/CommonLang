@@ -7,7 +7,9 @@
  ******************************************************************************/
 package com.blackrook.lang.json;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -73,7 +75,8 @@ public class JSONDefaultConverter implements JSONConverter<Object>
 			for (String f : Reflect.getPublicFields(object))
 			{
 				try {
-					if (!clz.getField(f).isAnnotationPresent(JSONIgnore.class))
+					Field field = clz.getField(f);
+					if (!field.isAnnotationPresent(JSONIgnore.class) && !Modifier.isStatic(field.getModifiers()))
 					{
 						out.addMember(f, Reflect.getField(object, f));
 					}
