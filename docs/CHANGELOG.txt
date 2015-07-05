@@ -1,5 +1,11 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
+Slated for 2.6.2
+================
+
+- Fixed: If a tag has a qualified name, the XMLStruct name is now the 
+  qualified name.
+
 Changed in 2.6.1
 ================
 

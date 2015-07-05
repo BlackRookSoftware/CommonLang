@@ -64,7 +64,7 @@ public final class XMLStructFactory
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attribs) throws SAXException
 		{
-			XMLStruct struct = new XMLStruct(localName);
+			XMLStruct struct = new XMLStruct(qName != null ? qName : localName);
 			if (!structStack.isEmpty())
 				structStack.peek().addStruct(struct);
 			
