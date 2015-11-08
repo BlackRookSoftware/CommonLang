@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2015 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -71,6 +71,9 @@ public abstract class Parser
 	/**
 	 * Matches the current token. If matched, this returns true and advances
 	 * to the next token. Else, this throws an error and returns false.
+	 * @deprecated in 2.7.0 - Calls {@link #getTypeErrorText(int)}, 
+	 * 		but this leads to a loss of clarity and freedom with error message creation, and
+	 * 		should not be used.
 	 */
 	protected boolean matchTypeStrict(int tokenType)
 	{
@@ -137,8 +140,15 @@ public abstract class Parser
 	 * Called by addTypeError().
 	 * @param tokenType	the type code for the token that should have been matched.
 	 * @return the String representation of the type.
+	 * @deprecated in 2.7.0 - {@link #matchTypeStrict(int)} calls this, 
+	 * 		but this leads to a loss of clarity with error message creation, and
+	 * 		should not be used.
 	 */
-	protected abstract String getTypeErrorText(int tokenType);
+	@Deprecated
+	protected String getTypeErrorText(int tokenType)
+	{
+		return null;
+	}
 	
 	/**
 	 * Adds an error message to error list along with the current token's information

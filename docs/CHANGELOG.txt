@@ -1,10 +1,11 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
-Slated for 2.6.2
+Slated for 2.7.0
 ================
 
 - Fixed: If a tag has a qualified name, the XMLStruct name is now the 
   qualified name.
+- Deprecated: Parser.getTypeErrorText() and Parser.matchTypeStrict() have been deprecated.
 
 Changed in 2.6.1
 ================
