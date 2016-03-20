@@ -242,8 +242,11 @@ public class JSONReader
 				if (!ArrayValue())
 					return false;
 				
-				if (!matchTypeStrict(JSONLexer.TYPE_RBRACK))
+				if (!matchType(JSONLexer.TYPE_RBRACK))
+				{
+					addErrorMessage("Expected ']'");
 					return false;
+				}
 				
 				return true;
 			}
@@ -254,8 +257,11 @@ public class JSONReader
 				if (!ObjectValue())
 					return false;
 				
-				if (!matchTypeStrict(JSONLexer.TYPE_RBRACE))
+				if (!matchType(JSONLexer.TYPE_RBRACE))
+				{
+					addErrorMessage("Expected '}'");
 					return false;
+				}
 				
 				return true;
 			}
@@ -314,8 +320,11 @@ public class JSONReader
 				currentMember.push(currentToken().getLexeme());
 				nextToken();
 				
-				if (!matchTypeStrict(JSONLexer.TYPE_COLON))
+				if (!matchType(JSONLexer.TYPE_COLON))
+				{
+					addErrorMessage("Expected ':'");
 					return false;
+				}
 				
 				if (Value())
 				{
@@ -349,8 +358,11 @@ public class JSONReader
 				currentMember.push(currentToken().getLexeme());
 				nextToken();
 				
-				if (!matchTypeStrict(JSONLexer.TYPE_COLON))
+				if (!matchType(JSONLexer.TYPE_COLON))
+				{
+					addErrorMessage("Expected ':'");
 					return false;
+				}
 				
 				if (Value())
 				{
@@ -415,31 +427,6 @@ public class JSONReader
 			return true;
 		}
 		
-
-		@Override
-		protected String getTypeErrorText(int tokenType)
-		{
-			switch (tokenType)
-			{
-				case JSONLexer.TYPE_LBRACE:
-					return "'{'";
-				case JSONLexer.TYPE_RBRACE:
-					return "'}'";
-				case JSONLexer.TYPE_LBRACK:
-					return "'['";
-				case JSONLexer.TYPE_RBRACK:
-					return "']'";
-				case JSONLexer.TYPE_COLON:
-					return "':'";
-				case JSONLexer.TYPE_COMMA:
-					return "','";
-				case JSONLexer.TYPE_STRING:
-					return "string";
-			}
-			return "";
-		}
-		
 	}
-	
 
 }
