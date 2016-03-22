@@ -1,6 +1,6 @@
 # Black Rook Common Lang
 
-Copyright (c) 2009-2014 Black Rook Software. All rights reserved.  
+Copyright (c) 2009-2016 Black Rook Software. All rights reserved.  
 [http://blackrooksoftware.com/projects.htm?name=commonlang](http://blackrooksoftware.com/projects.htm?name=commonlang)  
 [https://github.com/BlackRookSoftware/CommonLang](https://github.com/BlackRookSoftware/CommonLang)
 
