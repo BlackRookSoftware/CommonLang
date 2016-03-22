@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -21,6 +21,57 @@ import com.blackrook.commons.list.SortedList;
  */
 public class LexerKernel
 {
+	/** Reserved token type: End of lexer. */
+	public static final int TYPE_END_OF_LEXER = 		-1;
+	/** Reserved token type: End of stream. */
+	public static final int TYPE_END_OF_STREAM =		-2;
+	/** Reserved token type: Number. */
+	public static final int TYPE_NUMBER = 				-3;
+	/** Reserved token type: Space. */
+	public static final int TYPE_DELIM_SPACE = 			-4;
+	/** Reserved token type: Tab. */
+	public static final int TYPE_DELIM_TAB = 			-5;
+	/** Reserved token type: New line character. */
+	public static final int TYPE_DELIM_NEWLINE = 		-6;
+	/** Reserved token type: Open comment. */
+	public static final int TYPE_DELIM_OPEN_COMMENT = 	-7;
+	/** Reserved token type: Close comment. */
+	public static final int TYPE_DELIM_CLOSE_COMMENT = 	-8;
+	/** Reserved token type: Line comment. */
+	public static final int TYPE_DELIM_LINE_COMMENT = 	-9;
+	/** Reserved token type: Identifier. */
+	public static final int TYPE_IDENTIFIER = 			-10;
+	/** Reserved token type: Unknown token. */
+	public static final int TYPE_UNKNOWN = 				-11;
+	/** Reserved token type: Illegal token. */
+	public static final int TYPE_ILLEGAL = 				-12;
+	/** Reserved token type: Comment. */
+	public static final int TYPE_COMMENT = 				-13;
+	/** Reserved token type: Line Comment. */
+	public static final int TYPE_LINE_COMMENT = 		-14;
+	/** Reserved token type: String. */
+	public static final int TYPE_STRING = 				-15;
+	/** Reserved token type: Special (never returned). */
+	public static final int TYPE_SPECIAL = 				-16;
+	/** Reserved token type: Delimiter (never returned). */
+	public static final int TYPE_DELIMITER = 			-17;
+	/** Reserved token type: Point state (never returned). */
+	public static final int TYPE_POINT = 				-18;
+	/** Reserved token type: Floating point state (never returned). */
+	public static final int TYPE_FLOAT = 				-19;
+	/** Reserved token type: Delimiter Comment (never returned). */
+	public static final int TYPE_DELIM_COMMENT = 		-20;
+	/** Reserved token type: hexadecimal integer (never returned). */
+	public static final int TYPE_HEX_INTEGER0 = 		-21;
+	/** Reserved token type: hexadecimal integer (never returned). */
+	public static final int TYPE_HEX_INTEGER1 = 		-22;
+	/** Reserved token type: hexadecimal integer (never returned). */
+	public static final int TYPE_HEX_INTEGER = 			-23;
+	/** Reserved token type: Exponent state (never returned). */
+	public static final int TYPE_EXPONENT = 			-24;
+	/** Reserved token type: Exponent power state (never returned). */
+	public static final int TYPE_EXPONENT_POWER = 		-25;
+
 	/**
 	 * Table of single-character (or beginning character of) significant
 	 * delimiters. Delimiters immediately break the current token if encountered.
@@ -106,7 +157,7 @@ public class LexerKernel
 	 * Adds a delimiter to this lexer.
 	 * @param delimiter		the delimiter lexeme.
 	 * @param type			the type id.
-	 * @throws IllegalArgumentException if type is < 0 or delimiter is null or empty.
+	 * @throws IllegalArgumentException if type is &lt; 0 or delimiter is null or empty.
 	 */
 	public void addDelimiter(String delimiter, int type)
 	{
@@ -153,7 +204,7 @@ public class LexerKernel
 	 * Adds a comment-starting delimiter to this lexer.
 	 * @param delimiter		the delimiter lexeme.
 	 * @param type			the type id.
-	 * @throws IllegalArgumentException if type is < 0 or delimiter is null or empty.
+	 * @throws IllegalArgumentException if type is &lt; 0 or delimiter is null or empty.
 	 */
 	public void addCommentStartDelimiter(String delimiter, int type)
 	{
@@ -165,7 +216,7 @@ public class LexerKernel
 	 * Adds a comment-ending delimiter to this lexer.
 	 * @param delimiter		the delimiter lexeme.
 	 * @param type			the type id.
-	 * @throws IllegalArgumentException if type is < 0 or delimiter is null or empty.
+	 * @throws IllegalArgumentException if type is &lt; 0 or delimiter is null or empty.
 	 */
 	public void addCommentEndDelimiter(String delimiter, int type)
 	{
@@ -179,7 +230,7 @@ public class LexerKernel
 	 * Adds a line comment delimiter to this lexer.
 	 * @param delimiter		the delimiter lexeme.
 	 * @param type			the type id.
-	 * @throws IllegalArgumentException if type is < 0 or delimiter is null or empty.
+	 * @throws IllegalArgumentException if type is &lt; 0 or delimiter is null or empty.
 	 */
 	public void addCommentLineDelimiter(String delimiter, int type)
 	{
@@ -213,49 +264,73 @@ public class LexerKernel
 		caseInsensitiveKeywordTable.put(keyword, type);
 	}
 
-	/** Will this lexer include space tokens? */
+	/** 
+	 * Checks if this lexer includes space tokens.
+	 * @return true if so, false if not. 
+	 */
 	public boolean willIncludeSpaces()
 	{
 		return includeSpaces;
 	}
 
-	/** Sets if this lexer includes space tokens? */
+	/** 
+	 * Sets if this lexer includes space tokens? 
+	 * @param includeSpaces true if so, false if not.
+	 */
 	public void setIncludeSpaces(boolean includeSpaces)
 	{
 		this.includeSpaces = includeSpaces;
 	}
 
-	/** Will this lexer include tab tokens? */
+	/** 
+	 * Checks if this lexer includes tab tokens.
+	 * @return true if so, false if not. 
+	 */
 	public boolean willIncludeTabs()
 	{
 		return includeTabs;
 	}
 
-	/** Sets if this lexer includes tab tokens. */
+	/** 
+	 * Sets if this lexer includes tab tokens.
+	 * @param includeTabs true if so, false if not. 
+	 */
 	public void setIncludeTabs(boolean includeTabs)
 	{
 		this.includeTabs = includeTabs;
 	}
 
-	/** Will this lexer include newline tokens? */
+	/** 
+	 * Checks if this lexer includes newline tokens.
+	 * @return true if so, false if not.
+	 */
 	public boolean willIncludeNewlines()
 	{
 		return includeNewlines;
 	}
 
-	/** Sets if this lexer includes newline tokens. */
+	/** 
+	 * Sets if this lexer includes newline tokens.
+	 * @param includeNewlines true if so, false if not. 
+	 */
 	public void setIncludeNewlines(boolean includeNewlines)
 	{
 		this.includeNewlines = includeNewlines;
 	}
 
-	/** Will this lexer include stream break tokens? */
+	/** 
+	 * Checks if this lexer includes stream break tokens.
+	 * @return true if so, false if not.
+	 */
 	public boolean willIncludeStreamBreak()
 	{
 		return includeStreamBreak;
 	}
 
-	/** Sets if this lexer include stream break tokens. */
+	/** 
+	 * Sets if this lexer includes stream break tokens.
+	 * @param includeStreamBreak true if so, false if not. 
+	 */
 	public void setIncludeStreamBreak(boolean includeStreamBreak)
 	{
 		this.includeStreamBreak = includeStreamBreak;
@@ -274,6 +349,7 @@ public class LexerKernel
 	/**
 	 * Gets the current decimal separator character.
 	 * By default, this is the current locale's decimal separator character.
+	 * @return the separator character.
 	 */
 	public char getDecimalSeparator()
 	{

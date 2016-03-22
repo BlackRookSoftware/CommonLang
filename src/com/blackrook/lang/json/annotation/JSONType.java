@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.blackrook.lang.json.JSONConverter;
 import com.blackrook.lang.json.JSONDefaultConverter;
 import com.blackrook.lang.json.JSONObject;
 
@@ -24,6 +25,9 @@ import com.blackrook.lang.json.JSONObject;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JSONType
 {
-	/** This class's converter class. */
-	Class<?> converter() default JSONDefaultConverter.class;
+	/** 
+	 * This class's converter class.
+	 * @return the JSONConverter class to use. 
+	 */
+	Class<? extends JSONConverter<Object>> converter() default JSONDefaultConverter.class;
 }

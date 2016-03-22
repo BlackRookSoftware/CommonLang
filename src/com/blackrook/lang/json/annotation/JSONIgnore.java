@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -24,6 +24,9 @@ import com.blackrook.lang.json.JSONObject;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JSONIgnore
 {
-	/** Ignore this value? */
+	/** 
+	 * Ignore this value?
+	 * @return true if so, false if not. 
+	 */
 	boolean value() default true;
 }

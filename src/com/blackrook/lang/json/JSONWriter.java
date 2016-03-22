@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ public final class JSONWriter
 	 * Writes a JSONObject out to the following output stream.
 	 * @param jsonObject the object to write.
 	 * @param out the output stream to write to.
+	 * @throws IOException if a write error occurs.
 	 */
 	public static void writeJSON(JSONObject jsonObject, OutputStream out) throws IOException
 	{
@@ -34,6 +35,7 @@ public final class JSONWriter
 	 * Writes a JSONObject out to the following output stream.
 	 * @param jsonObject the object to write.
 	 * @param writer the writer to write to.
+	 * @throws IOException if a write error occurs.
 	 */
 	public static void writeJSON(JSONObject jsonObject, Writer writer) throws IOException
 	{
@@ -43,6 +45,8 @@ public final class JSONWriter
 	/**
 	 * Writes a JSONObject out to the following output stream.
 	 * @param jsonObject the object to write.
+	 * @return the JSONObject as a JSON string. 
+	 * @throws IOException if a write error occurs.
 	 * @since 2.5.1
 	 */
 	public static String writeJSONString(JSONObject jsonObject) throws IOException
@@ -56,6 +60,7 @@ public final class JSONWriter
 	 * Writes a JSONObject out to the following output stream.
 	 * @param object the object to write.
 	 * @param out the output stream to write to.
+	 * @throws IOException if a write error occurs.
 	 * @since 2.5.1
 	 */
 	public static void writeJSON(Object object, OutputStream out) throws IOException
@@ -67,6 +72,7 @@ public final class JSONWriter
 	 * Writes a JSONObject out to the following output stream.
 	 * @param object the object to write.
 	 * @param writer the writer to write to.
+	 * @throws IOException if a write error occurs.
 	 * @since 2.5.1
 	 */
 	public static void writeJSON(Object object, Writer writer) throws IOException
@@ -77,6 +83,8 @@ public final class JSONWriter
 	/**
 	 * Writes a JSONObject out to the following output stream.
 	 * @param object the object to write.
+	 * @return the JSONObject as a JSON string. 
+	 * @throws IOException if a write error occurs.
 	 * @since 2.5.1
 	 */
 	public static String writeJSONString(Object object) throws IOException

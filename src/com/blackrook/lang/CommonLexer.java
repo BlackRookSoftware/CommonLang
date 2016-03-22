@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -110,7 +110,7 @@ public class CommonLexer extends Lexer
 			return null;
 		
 		// newline
-		else if (token.getType() == TYPE_DELIM_NEWLINE)
+		else if (token.getType() == CommonLexerKernel.TYPE_DELIM_NEWLINE)
 			return nextToken();
 		
 		// non-directive
@@ -121,7 +121,7 @@ public class CommonLexer extends Lexer
 				
 			switch (token.getType())
 			{
-				case TYPE_IDENTIFIER:
+				case CommonLexerKernel.TYPE_IDENTIFIER:
 				{
 					if (defineTable.containsKey(token.getLexeme()))
 					{
@@ -144,7 +144,7 @@ public class CommonLexer extends Lexer
 				return nextToken();
 				
 			Token ptok = super.nextToken();
-			if (ptok != null && ptok.getType() == TYPE_STRING)
+			if (ptok != null && ptok.getType() == CommonLexerKernel.TYPE_STRING)
 			{
 				String pathname = ptok.getLexeme();
 				
@@ -169,7 +169,7 @@ public class CommonLexer extends Lexer
 				return nextToken();
 
 			Token ptok = super.nextToken();
-			if (ptok.getType() == TYPE_IDENTIFIER)
+			if (ptok.getType() == CommonLexerKernel.TYPE_IDENTIFIER)
 			{
 				String def = ptok.getLexeme();
 				List<Lexer.Token> list = new List<Lexer.Token>();
@@ -178,7 +178,7 @@ public class CommonLexer extends Lexer
 				if (ptok == null)
 					throw createException("Define directive: Unfinished declaration '"+def+"'.");
 					
-				while (ptok != null && ptok.getType() != TYPE_DELIM_NEWLINE)
+				while (ptok != null && ptok.getType() != CommonLexerKernel.TYPE_DELIM_NEWLINE)
 				{
 					if (ptok.getLexeme().equals(def))
 						throw createException("Define directive: Attempted to create recursive definition '"+def+"'.");
@@ -204,7 +204,7 @@ public class CommonLexer extends Lexer
 				return nextToken();
 
 			Token ptok = super.nextToken();
-			if (ptok.getType() == TYPE_IDENTIFIER)
+			if (ptok.getType() == CommonLexerKernel.TYPE_IDENTIFIER)
 			{
 				String def = ptok.getLexeme();
 				removeDefineMacro(def);
@@ -217,7 +217,7 @@ public class CommonLexer extends Lexer
 		else if (token.getLexeme().equals("#ifdef"))
 		{
 			Token ptok = super.nextToken();
-			if (ptok.getType() == TYPE_IDENTIFIER)
+			if (ptok.getType() == CommonLexerKernel.TYPE_IDENTIFIER)
 			{
 				ifBlockStack.push(defineTable.containsKey(ptok.getLexeme()));
 				return nextToken();
@@ -229,7 +229,7 @@ public class CommonLexer extends Lexer
 		else if (token.getLexeme().equals("#ifndef"))
 		{
 			Token ptok = super.nextToken();
-			if (ptok.getType() == TYPE_IDENTIFIER)
+			if (ptok.getType() == CommonLexerKernel.TYPE_IDENTIFIER)
 			{
 				ifBlockStack.push(!defineTable.containsKey(ptok.getLexeme()));
 				return nextToken();
@@ -271,13 +271,19 @@ public class CommonLexer extends Lexer
 	}
 
 	/**
-	 * Creates an IOException for preprocessor exceptions.
+	 * Creates an IOException for preprocessor errors and problems.
+	 * @param message the exception message.
+	 * @return the exception to throw.
 	 */
 	protected IOException createException(String message)
 	{
 		return new IOException("("+getCurrentStreamName()+") Line "+getCurrentLine()+": "+message);
 	}
 	
+	/**
+	 * Checks if the "IF" stack is empty; if not, returns the top.
+	 * @return the topmost IF boolean value, or true if the stack is empty.
+	 */
 	protected boolean ifCheck()
 	{
 		return ifBlockStack.isEmpty() || (!ifBlockStack.isEmpty() && ifBlockStack.peek());
@@ -285,6 +291,8 @@ public class CommonLexer extends Lexer
 
 	/**
 	 * Returns an open input stream to a resource at a specified path in an "include" directive.
+	 * @param path the resource path to "include".
+	 * @return an open input stream to the resolved resource.
 	 * @throws IOException if the stream cannot be opened.
 	 */
 	protected InputStream getResource(String path) throws IOException

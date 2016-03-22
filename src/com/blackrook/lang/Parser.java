@@ -27,6 +27,7 @@ public abstract class Parser
 	
 	/**
 	 * Constructs the parser and binds a Lexer to it.
+	 * @param lexer the lexer that this reads from.
 	 */
 	protected Parser(Lexer lexer)
 	{
@@ -35,7 +36,8 @@ public abstract class Parser
 	}
 	
 	/**
-	 * Returns a list of error messages.
+	 * Gets the list of error messages.
+	 * @return an array of error messages.
 	 */
 	public String[] getErrorMessages()
 	{
@@ -47,7 +49,8 @@ public abstract class Parser
 	}
 	
 	/**
-	 * Returns the current token.
+	 * Gets the token read from the last {@link #nextToken()} call.
+	 * @return the current token.
 	 */
 	protected Lexer.Token currentToken()
 	{
@@ -57,6 +60,8 @@ public abstract class Parser
 	/**
 	 * Matches the current token. If matched, this returns true and advances
 	 * to the next token. Else, this returns false.
+	 * @param tokenType the type to match.
+	 * @return true if matched, false if not.
 	 */
 	protected boolean matchType(int tokenType)
 	{
@@ -71,6 +76,8 @@ public abstract class Parser
 	/**
 	 * Matches the current token. If matched, this returns true and advances
 	 * to the next token. Else, this throws an error and returns false.
+	 * @param tokenType the type to match.
+	 * @return true if matched, false if not.
 	 * @deprecated in 2.7.0 - Calls {@link #getTypeErrorText(int)}, 
 	 * 		but this leads to a loss of clarity and freedom with error message creation, and
 	 * 		should not be used.
@@ -87,8 +94,10 @@ public abstract class Parser
 	}
 
 	/**
-	 * Matches the type of the current token. If matched, this returns true.
+	 * Attempts to match the type of the current token. If matched, this returns true.
 	 * This DOES NOT ADVANCE to the next token.
+	 * @param tokenTypes the list of types.
+	 * @return true if one was matched, false if not.
 	 */
 	protected boolean currentType(int ... tokenTypes)
 	{
@@ -111,14 +120,17 @@ public abstract class Parser
 		try {
 			token = lexer.nextToken();
 		} catch (IOException e) {
-			throw new ParserException("Could not read next token from Lexer: "+e.getMessage());
+			throw new ParserException("Could not read next token from Lexer: "+e.getMessage(), e);
 		}
 	}
 
 	/**
 	 * Returns an error based on an expected type.
 	 * See addErrorMessage().
-	 * @param tokenTypes	the type codes for the tokens that should have been matched.
+	 * @param tokenTypes the type codes for the tokens that should have been matched.
+	 * @deprecated in 2.7.0 - {@link #matchTypeStrict(int)} calls this, 
+	 * 		but this leads to a loss of clarity with error message creation, and
+	 * 		should not be used.
 	 */
 	protected void addTypeError(int ... tokenTypes)
 	{
@@ -153,6 +165,7 @@ public abstract class Parser
 	/**
 	 * Adds an error message to error list along with the current token's information
 	 * (like line number, etc.).
+	 * @param errorMessage the error message.
 	 */
 	protected void addErrorMessage(String errorMessage)
 	{

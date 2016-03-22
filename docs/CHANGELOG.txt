@@ -1,10 +1,14 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
-Slated for 2.7.0
+Changed in 2.7.0
 ================
+
+NOTE: Next version will be removing deprecated packages, classes, and methods!
 
 - Fixed: If a tag has a qualified name, the XMLStruct name is now the 
   qualified name.
+- Fixed: Lexer now pays attention to the decimal point character in the Kernel.
+- Moved: Lexeme types to LexerKernel from Lexer. Update your code. Should be easy.
 - Deprecated: Parser.getTypeErrorText() and Parser.matchTypeStrict() have been deprecated.
 
 Changed in 2.6.1
