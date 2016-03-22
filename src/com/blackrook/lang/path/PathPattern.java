@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import com.blackrook.commons.list.List;
  * are separated by slashes or backslashes. File separators are slashes or backslashes (/ or \).
  * <p>
  * Each wildcard is as follows:
- * <table>
+ * <table summary="Wildcard Examples">
  * <tr><td>*</td><td>Match zero or more characters that is not a path separator.</td></tr>
  * <tr><td>?</td><td>Match one character that is not a path separator.</td></tr>
  * <tr><td>**</td><td>Match zero or more whole folders, lazily. Must be the only set of characters in a separated path.</td></tr>
@@ -29,7 +29,7 @@ import com.blackrook.commons.list.List;
  * they are preceeded with "&#42;&#42;/".
  * <p>
  * Examples of patterns:
- * <table>
+ * <table summary="Pattern Examples">
  * <tr><td>*.jsp</td><td>Match all paths that end in ".jsp".</td></tr>
  * <tr><td>apple/*.jsp</td><td>Match paths that end in ".jsp" under "apple".</td></tr>
  * <tr><td>apple/&#42;&#42;/orange/*.jsp</td><td>Match paths that end in ".jsp" under paths "apple/pear/orange" or "apple/pear/lemon/orange".</td></tr>

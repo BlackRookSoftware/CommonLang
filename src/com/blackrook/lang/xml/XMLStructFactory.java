@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ public final class XMLStructFactory
 	 * Reads in a stream of XML data and returns an XMLStruct of the data.
 	 * It will leave the input stream open after it is done.
 	 * @param in the input stream to use.
+	 * @return a new XMLStruct parsed from the input.
 	 * @throws IOException if a read error happens.
 	 * @throws SAXException if a parse error happens.
 	 */
@@ -64,7 +65,7 @@ public final class XMLStructFactory
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attribs) throws SAXException
 		{
-			XMLStruct struct = new XMLStruct(localName);
+			XMLStruct struct = new XMLStruct(qName != null ? qName : localName);
 			if (!structStack.isEmpty())
 				structStack.peek().addStruct(struct);
 			

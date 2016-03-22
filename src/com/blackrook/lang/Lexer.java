@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -11,11 +11,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.text.DecimalFormatSymbols;
 
 import com.blackrook.commons.Common;
 import com.blackrook.commons.linkedlist.Stack;
 import com.blackrook.commons.list.List;
+
+import static com.blackrook.lang.LexerKernel.*;
 
 /**
  * Class used for breaking up a stream of characters into lexicographical tokens.
@@ -36,57 +37,6 @@ public class Lexer
 {
 	public static boolean DEBUG = Common.parseBoolean(System.getProperty(Lexer.class.getName()+".debug"), false);
 	
-	/** Reserved token type: End of lexer. */
-	public static final int TYPE_END_OF_LEXER = 		-1;
-	/** Reserved token type: End of stream. */
-	public static final int TYPE_END_OF_STREAM =		-2;
-	/** Reserved token type: Number. */
-	public static final int TYPE_NUMBER = 				-3;
-	/** Reserved token type: Space. */
-	public static final int TYPE_DELIM_SPACE = 			-4;
-	/** Reserved token type: Tab. */
-	public static final int TYPE_DELIM_TAB = 			-5;
-	/** Reserved token type: New line character. */
-	public static final int TYPE_DELIM_NEWLINE = 		-6;
-	/** Reserved token type: Open comment. */
-	public static final int TYPE_DELIM_OPEN_COMMENT = 	-7;
-	/** Reserved token type: Close comment. */
-	public static final int TYPE_DELIM_CLOSE_COMMENT = 	-8;
-	/** Reserved token type: Line comment. */
-	public static final int TYPE_DELIM_LINE_COMMENT = 	-9;
-	/** Reserved token type: Identifier. */
-	public static final int TYPE_IDENTIFIER = 			-10;
-	/** Reserved token type: Unknown token. */
-	public static final int TYPE_UNKNOWN = 				-11;
-	/** Reserved token type: Illegal token. */
-	public static final int TYPE_ILLEGAL = 				-12;
-	/** Reserved token type: Comment. */
-	public static final int TYPE_COMMENT = 				-13;
-	/** Reserved token type: Line Comment. */
-	public static final int TYPE_LINE_COMMENT = 		-14;
-	/** Reserved token type: String. */
-	public static final int TYPE_STRING = 				-15;
-	/** Reserved token type: Special (never returned). */
-	public static final int TYPE_SPECIAL = 				-16;
-	/** Reserved token type: Delimiter (never returned). */
-	public static final int TYPE_DELIMITER = 			-17;
-	/** Reserved token type: Point state (never returned). */
-	public static final int TYPE_POINT = 				-18;
-	/** Reserved token type: Floating point state (never returned). */
-	public static final int TYPE_FLOAT = 				-19;
-	/** Reserved token type: Delimiter Comment (never returned). */
-	public static final int TYPE_DELIM_COMMENT = 		-20;
-	/** Reserved token type: hexadecimal integer (never returned). */
-	public static final int TYPE_HEX_INTEGER0 = 		-21;
-	/** Reserved token type: hexadecimal integer (never returned). */
-	public static final int TYPE_HEX_INTEGER1 = 		-22;
-	/** Reserved token type: hexadecimal integer (never returned). */
-	public static final int TYPE_HEX_INTEGER = 			-23;
-	/** Reserved token type: Exponent state (never returned). */
-	public static final int TYPE_EXPONENT = 			-24;
-	/** Reserved token type: Exponent power state (never returned). */
-	public static final int TYPE_EXPONENT_POWER = 		-25;
-
 	/** Default lexer name. */
 	public static final String DEFAULT_NAME = "Lexer";
 	
@@ -96,8 +46,6 @@ public class Lexer
 	public static final char END_OF_LEXER = '\uffff';
 	/** Lexer newline char. */
 	public static final char NEWLINE = '\n';
-	/** The locale's default decimal separator. */
-	public static final char DEFAULT_DECIMAL_POINT = DecimalFormatSymbols.getInstance().getDecimalSeparator();
 	
 	/** The lexer kernel to use. */
 	private LexerKernel kernel;
@@ -131,8 +79,9 @@ public class Lexer
 	
 	/**
 	 * Creates a new lexer around a String, that will be wrapped into a StringReader.
-	 * @param name	the name of this lexer.
-	 * @param in	the reader to read from.
+	 * @param kernel the lexer kernel to use for defining how to parse the input text.
+	 * @param name the name of this lexer.
+	 * @param in the reader to read from.
 	 */
 	public Lexer(LexerKernel kernel, String name, String in)
 	{
@@ -142,7 +91,8 @@ public class Lexer
 	/**
 	 * Creates a new lexer around a reader.
 	 * This will also assign this lexer a default name.
-	 * @param in	the reader to read from.
+	 * @param kernel the kernel to use for this lexer.
+	 * @param in the reader to read from.
 	 */
 	public Lexer(LexerKernel kernel, Reader in)
 	{
@@ -151,8 +101,9 @@ public class Lexer
 	
 	/**
 	 * Creates a new lexer around a reader.
-	 * @param name	the name of this lexer.
-	 * @param in	the reader to read from.
+	 * @param kernel the kernel to use for this lexer.
+	 * @param name the name of this lexer.
+	 * @param in the reader to read from.
 	 */
 	public Lexer(LexerKernel kernel, String name, Reader in)
 	{
@@ -165,7 +116,7 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns the lexer's current stream name.
+	 * @return the lexer's current stream name.
 	 */
 	public String getCurrentStreamName()
 	{
@@ -175,8 +126,8 @@ public class Lexer
 	}
 
 	/**
-	 * Returns the lexer's current stream's line number.
-	 * Returns -1 if at Lexer end.
+	 * Gets the lexer's current stream's line number.
+	 * @return the lexer's current stream's line number, or -1 if at Lexer end.
 	 */
 	public int getCurrentLine()
 	{
@@ -188,8 +139,8 @@ public class Lexer
 	/**
 	 * Pushes a stream onto the stream stack.
 	 * This will reset the token state as well.
-	 * @param name	the name of the stream.
-	 * @param in	the reader reader.
+	 * @param name the name of the stream.
+	 * @param in the reader reader.
 	 */
 	public void pushStream(String name, Reader in)
 	{
@@ -198,6 +149,7 @@ public class Lexer
 	
 	/**
 	 * Gets the current stream.
+	 * @return the name of the current stream.
 	 */
 	public Stream currentStream()
 	{
@@ -205,8 +157,10 @@ public class Lexer
 	}
 	
 	/**
-	 * Reads the next token.
+	 * Gets the next token.
 	 * If there are no tokens left to read, this will return null.
+	 * @return the next token, or null if no more tokens to read.
+	 * @throws IOException if a token cannot be read by the underlying Reader.
 	 */
 	public Token nextToken() throws IOException
 	{
@@ -1347,6 +1301,8 @@ public class Lexer
 	
 	/**
 	 * Reads the next character.
+	 * @return the character read, or {@link #END_OF_LEXER} if no more characters.
+	 * @throws IOException if a token cannot be read by the underlying Reader.
 	 */
 	protected char readChar() throws IOException
 	{
@@ -1357,7 +1313,7 @@ public class Lexer
 	}
 
 	/**
-	 * Returns the current state.
+	 * @return the current state.
 	 */
 	protected int getState()
 	{
@@ -1366,6 +1322,7 @@ public class Lexer
 	
 	/**
 	 * Sets the current state.
+	 * @param state the new state.
 	 */
 	protected void setState(int state)
 	{
@@ -1373,7 +1330,7 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns if we are in a delimiter break.
+	 * @return if we are in a delimiter break.
 	 */
 	protected boolean isOnDelimBreak()
 	{
@@ -1383,13 +1340,14 @@ public class Lexer
 	/**
 	 * Clears if we are in a delimiter break.
 	 */
-	protected boolean clearDelimBreak()
+	protected void clearDelimBreak()
 	{
-		return delimBreak = false;
+		delimBreak = false;
 	}
 	
 	/**
 	 * Sets if we are in a delimiter break.
+	 * @param delimChar the delimiter character that starts the break.
 	 */
 	protected void setDelimBreak(char delimChar)
 	{
@@ -1399,6 +1357,7 @@ public class Lexer
 	
 	/**
 	 * Saves a character for the next token.
+	 * @param c the character to save into the current token.
 	 */
 	protected void saveChar(char c)
 	{
@@ -1407,6 +1366,7 @@ public class Lexer
 	
 	/**
 	 * Sets the end character for a string.
+	 * @param c the character to set.
 	 */
 	protected void setStringStartAndEnd(char c)
 	{
@@ -1415,7 +1375,8 @@ public class Lexer
 	}
 
 	/**
-	 * Returns true if this is a character that starts a String.
+	 * Sets and looks up the special type using a delimiter character.
+	 * @param c the character to use.
 	 */
 	protected void setSpecialType(char c)
 	{
@@ -1424,7 +1385,8 @@ public class Lexer
 	}
 
 	/**
-	 * Finishes the current token.
+	 * Gets the current token lexeme.
+	 * @return the current contents of the token lexeme builder buffer. 
 	 */
 	protected String getCurrentLexeme()
 	{
@@ -1432,7 +1394,7 @@ public class Lexer
 	}
 
 	/**
-	 * Clears the current lexeme buffer.
+	 * Clears the current token lexeme buffer.
 	 */
 	protected void clearCurrentLexeme()
 	{
@@ -1440,16 +1402,20 @@ public class Lexer
 	}
 
 	/**
-	 * Finishes the current token.
+	 * Creates a new token using the current stream name, line, and line number.
+	 * @param type the token type to apply.
+	 * @param lexeme the token's lexeme.
+	 * @return a new Token object.
 	 */
 	protected Token makeToken(int type, String lexeme)
 	{
-		return new Token(streamStack.peek().streamName, lexeme, 
-				streamStack.peek().line, streamStack.peek().lineNum, type);
+		return new Token(streamStack.peek().streamName, lexeme, streamStack.peek().line, streamStack.peek().lineNum, type);
 	}
 
 	/**
-	 * Convenience method for Character.isLetter().
+	 * Convenience method for <code>c == '_'</code>.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isUnderscore(char c)
 	{
@@ -1457,7 +1423,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Convenience method for Character.isLetter().
+	 * Convenience method for {@link Character#isLetter(char)}.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isLetter(char c)
 	{
@@ -1465,7 +1433,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Convenience method for Character.isDigit().
+	 * Convenience method for {@link Character#isDigit(char)}.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isDigit(char c)
 	{
@@ -1473,7 +1443,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns true if this is a hex digit.
+	 * Returns true if this is a hex digit (0-9, A-F, a-f).
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isHexDigit(char c)
 	{
@@ -1483,7 +1455,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Convenience method for Character.isWhitespace().
+	 * Convenience method for {@link Character#isWhitespace(char)}.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isWhitespace(char c)
 	{
@@ -1491,15 +1465,19 @@ public class Lexer
 	}
 
 	/**
-	 * Checks if is decimal point (depends on locale).
+	 * Checks if a character is a decimal point (depends on locale/kernel).
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isPoint(char c)
 	{
-		return c == DEFAULT_DECIMAL_POINT;
+		return kernel.getDecimalSeparator() == c;
 	}
 	
 	/**
-	 * Returns true if char is the exponent character in a number.
+	 * Checks if char is the exponent character in a number.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isExponent(char c)
 	{
@@ -1507,7 +1485,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns true if char is the exponent sign character in a number.
+	 * Checks if char is the exponent sign character in a number.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isExponentSign(char c)
 	{
@@ -1515,7 +1495,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns true if a char is a space.
+	 * Checks if a char is a space.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isSpace(char c)
 	{
@@ -1523,7 +1505,9 @@ public class Lexer
 	}
 
 	/**
-	 * Returns true if a char is a tab.
+	 * Checks if a char is a tab.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isTab(char c)
 	{
@@ -1531,7 +1515,9 @@ public class Lexer
 	}
 
 	/**
-	 * Returns true if this is a character that is a String escape character.
+	 * Checks if this is a character that is a String escape character.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isStringEscape(char c)
 	{
@@ -1539,7 +1525,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns true if this is a character that starts a String.
+	 * Checks if this is a character that starts a String.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isStringStart(char c)
 	{
@@ -1547,7 +1535,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns true if this is a character that starts a special token.
+	 * Checks if this is a character that starts a special token.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isSpecialStart(char c)
 	{
@@ -1555,7 +1545,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns true if this is a character that ends a String.
+	 * Checks if this is a character that ends a String.
+	 * @param c the character to test.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isStringEnd(char c)
 	{
@@ -1563,8 +1555,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns the character that ends a String.
-	 * Returns null character ('\0') if this does not end a string.
+	 * Gets the character that ends a String, using the starting character.
+	 * @param c the starting character.
+	 * @return the corresponding end character, or the null character ('\0') if this does not end a string.
 	 */
 	protected char getStringEnd(char c)
 	{
@@ -1575,14 +1568,20 @@ public class Lexer
 	
 	/**
 	 * Gets the special type for a special char.
+	 * @param c the character input.
+	 * @return the corresponding type, or {@link LexerKernel#TYPE_UNKNOWN} if no type.
 	 */
 	protected int getSpecialType(char c)
 	{
+		if (!kernel.getSpecialDelimTable().containsKey(c))
+			return TYPE_UNKNOWN;
 		return kernel.getSpecialDelimTable().get(c);
 	}
 	
 	/**
-	 * Returns true if this is a (or the start of a) delimiter character.
+	 * Checks if this is a (or the start of a) delimiter character.
+	 * @param c the character input.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isDelimiterStart(char c)
 	{
@@ -1590,7 +1589,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns true if this is a (or the start of a) block-comment-ending delimiter character.
+	 * Checks if this is a (or the start of a) block-comment-ending delimiter character.
+	 * @param c the character input.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isCommentEndDelimiterStart(char c)
 	{
@@ -1598,7 +1599,9 @@ public class Lexer
 	}
 	
 	/**
-	 * Returns if a char equals END_OF_STREAM.
+	 * Checks if a char equals {@link #END_OF_STREAM}.
+	 * @param c the character input.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isStreamEnd(char c)
 	{
@@ -1606,7 +1609,9 @@ public class Lexer
 	}
 
 	/**
-	 * Returns if a char equals END_OF_LEXER.
+	 * Checks if a char equals {@link #END_OF_LEXER}.
+	 * @param c the character input.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isLexerEnd(char c)
 	{
@@ -1614,7 +1619,9 @@ public class Lexer
 	}
 
 	/**
-	 * Returns if a char equals NEWLINE.
+	 * Checks if a char equals {@link #NEWLINE}.
+	 * @param c the character input.
+	 * @return true if so, false if not.
 	 */
 	protected boolean isNewline(char c)
 	{
@@ -1622,8 +1629,10 @@ public class Lexer
 	}
 
 	/**
-	 * Adds an error message to error list along with the current token's information
+	 * Adds a preprocessor error message to error list along with the current token's information
 	 * (like line number, etc.).
+	 * @param errorMessage the error message.
+	 * @param lexeme the current lexeme.
 	 */
 	protected void addPreprocessorErrorMessage(String errorMessage, String lexeme)
 	{
@@ -1636,7 +1645,8 @@ public class Lexer
 	}
 
 	/**
-	 * Returns a list of error messages.
+	 * Gets the list of error messages.
+	 * @return an array of error messages.
 	 */
 	public String[] getErrorMessages()
 	{
@@ -1647,7 +1657,6 @@ public class Lexer
 		return out;
 	}
 	
-
 	/**
 	 * Lexer token object.
 	 */
@@ -1659,7 +1668,7 @@ public class Lexer
 		private int tokenLine;
 		private int type;
 		
-		protected Token(String streamName, String lexeme, String lineText, int tokenLine, int type)
+		private Token(String streamName, String lexeme, String lineText, int tokenLine, int type)
 		{
 			this.streamName = streamName;
 			this.lexeme = lexeme;
@@ -1669,42 +1678,45 @@ public class Lexer
 		}
 
 		/**
-		 * Returns the name of the 
-		 * stream that this token came from.
+		 * @return the name of the stream that this token came from.
 		 */
 		public String getStreamName()
 		{
 			return streamName;
 		}
 
-		/** Returns this token's lexeme. */
+		/** 
+		 * @return this token's lexeme. 
+		 */
 		public String getLineText()
 		{
 			return lineText;
 		}
 
 		/**
-		 * Returns the line number within the 
-		 * stream that this token appeared.
+		 * @return the line number within the stream that this token appeared.
 		 */
 		public int getLine()
 		{
 			return tokenLine;
 		}
 
-		/** Returns this token's lexeme. */
+		/** @return this token's lexeme. */
 		public String getLexeme()
 		{
 			return lexeme;
 		}
 
-		/** Returns this token's type. */
+		/** @return this token's type. */
 		public int getType()
 		{
 			return type;
 		}
 		
-		/** Sets this token's type. */
+		/** 
+		 * Sets this token's type.
+		 * @param type a type corresponding to a type in the lexer or lexer kernel.
+		 */
 		public void setType(int type)
 		{
 			this.type = type;
@@ -1733,7 +1745,12 @@ public class Lexer
 		/** The current character number. */
 		private int charNum;
 
-		public Stream(String name, Reader in)
+		/**
+		 * Creates a new stream.
+		 * @param name the stream name.
+		 * @param in the reader used.
+		 */
+		protected Stream(String name, Reader in)
 		{
 			streamName = name;
 			reader = new BufferedReader(in);
@@ -1742,11 +1759,19 @@ public class Lexer
 			charNum = 0;
 		}
 		
+		/**
+		 * @return the stream name.
+		 */
 		public String getStreamName()
 		{
 			return streamName;
 		}
 		
+		/**
+		 * Reads a character from the stream.
+		 * @return the read character or {@link Lexer#END_OF_STREAM} if no more characters.
+		 * @throws IOException if a character cannot be read.
+		 */
 		public char readChar() throws IOException
 		{
 			if (line == null || charNum == line.length())

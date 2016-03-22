@@ -53,7 +53,7 @@
         	notree="false"
     		>
             <link href="http://blackrooksoftware.com/docs/common/"/>
-            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <link href="http://download.oracle.com/javase/7/docs/api/"/>
         </javadoc>
     </target>	
 

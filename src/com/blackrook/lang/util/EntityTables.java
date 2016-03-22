@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -17,7 +17,8 @@ import com.blackrook.commons.hash.HashMap;
 public interface EntityTables
 {
 	/** Map of entity names to characters. */
-	public static final HashMap<String, Character> ENTITY_NAME_MAP = new HashMap<String, Character>(){{
+	public static final HashMap<String, Character> ENTITY_NAME_MAP = new HashMap<String, Character>()
+	{{
 		put("nbsp", '\u00A0');
 		put("iexcl", '\u00A1');
 		put("cent", '\u00A2');
@@ -270,10 +271,11 @@ public interface EntityTables
 		put("lsaquo", '\u2039');
 		put("rsaquo", '\u203A');
 		put("euro", '\u20AC');
-}};
+	}};
 
 	/** Map of characters to entity names. */
-	public static final HashMap<Character, String> UNICODE_ENTITY_MAP = new HashMap<Character, String>(){{
+	public static final HashMap<Character, String> UNICODE_ENTITY_MAP = new HashMap<Character, String>()
+	{{
 		put('\u00f6',"ouml");
 		put('\u03a3',"Sigma");
 		put('\u00b0',"deg");
@@ -526,6 +528,6 @@ public interface EntityTables
 		put('\u00fe',"thorn");
 		put('\u03c0',"pi");
 		put('\u00b7',"middot");
-}};
+	}};
 
 }

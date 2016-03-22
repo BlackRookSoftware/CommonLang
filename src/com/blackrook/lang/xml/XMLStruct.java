@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2015 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the name of this structure.
+	 * @param name the structure name.
 	 */
 	public void setName(String name)
 	{
@@ -55,6 +56,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Gets the name of this structure.
+	 * @return the structure name.
 	 */
 	public String getName()
 	{
@@ -62,8 +64,9 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 	
 	/**
-	 * Returns true if the name of the structure is <code>name</code>,
-	 * false otherwise.
+	 * Checks if the name of the structure is <code>name</code>, false otherwise.
+	 * @param name the name to check for.
+	 * @return true if so, false if not.
 	 * @since 2.1.0
 	 */
 	public boolean isName(String name)
@@ -85,6 +88,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	/**
 	 * Removes a child structure from this one.
 	 * @param struct the structure to remove.
+	 * @return true if removed, false if not.
 	 */
 	public boolean removeStruct(XMLStruct struct)
 	{
@@ -126,7 +130,8 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 	
 	/**
-	 * Returns the count of how many children that this structure has.
+	 * Gets the count of how many children that this structure has.
+	 * @return the child count.
 	 * @since 2.3.0
 	 */
 	public int getChildCount()
@@ -137,7 +142,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 
 	/**
-	 * Returns if this structure has the characteristics of a singleton, specifically
+	 * Checks if this structure has the characteristics of a singleton, specifically
 	 * if this object has no children and a null value.
 	 * @return true if so, false if not.
 	 * @since 2.3.0
@@ -243,6 +248,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * Gets the String value of an attribute.
 	 * If the attribute does not exist, this returns the empty string.
 	 * @param attr the attribute name.
+	 * @return the attribute value, or <code>""</code> if not found.
 	 */
 	public String getAttribute(String attr)
 	{
@@ -255,6 +261,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * If the attribute does not exist, this returns <code>def</code>.
 	 * @param attr the attribute name.
 	 * @param def the default value to return if the attribute does not exist.
+	 * @return the attribute value, or <code>def</code> if not found.
 	 */
 	public String getAttribute(String attr, String def)
 	{
@@ -266,6 +273,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * Gets the byte value of an attribute.
 	 * If the attribute does not exist, this returns the empty string.
 	 * @param attr the attribute name.
+	 * @return the attribute value as a boolean, or false if not found.
 	 */
 	public boolean getAttributeBoolean(String attr)
 	{
@@ -278,6 +286,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * If the attribute does not exist, this returns <code>def</code>.
 	 * @param attr the attribute name.
 	 * @param def the default value to return if the attribute does not exist.
+	 * @return the attribute value as a boolean, or <code>def</code> if not found.
 	 */
 	public boolean getAttributeBoolean(String attr, boolean def)
 	{
@@ -289,6 +298,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * Gets the byte value of an attribute.
 	 * If the attribute does not exist, this returns the empty string.
 	 * @param attr the attribute name.
+	 * @return the attribute value as a byte, or 0 if not found.
 	 */
 	public byte getAttributeByte(String attr)
 	{
@@ -301,6 +311,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * If the attribute does not exist, this returns <code>def</code>.
 	 * @param attr the attribute name.
 	 * @param def the default value to return if the attribute does not exist.
+	 * @return the attribute value as a byte, or <code>def</code> if not found.
 	 */
 	public byte getAttributeByte(String attr, byte def)
 	{
@@ -312,6 +323,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * Gets the short value of an attribute.
 	 * If the attribute does not exist, this returns the empty string.
 	 * @param attr the attribute name.
+	 * @return the attribute value as a short, or 0 if not found.
 	 */
 	public short getAttributeShort(String attr)
 	{
@@ -324,6 +336,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * If the attribute does not exist, this returns <code>def</code>.
 	 * @param attr the attribute name.
 	 * @param def the default value to return if the attribute does not exist.
+	 * @return the attribute value as a short, or <code>def</code> if not found.
 	 */
 	public short getAttributeShort(String attr, short def)
 	{
@@ -335,6 +348,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * Gets the char value of an attribute.
 	 * If the attribute does not exist, this returns the empty string.
 	 * @param attr the attribute name.
+	 * @return the attribute value as a byte, or '\0' if not found.
 	 */
 	public char getAttributeChar(String attr)
 	{
@@ -347,6 +361,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * If the attribute does not exist, this returns <code>def</code>.
 	 * @param attr the attribute name.
 	 * @param def the default value to return if the attribute does not exist.
+	 * @return the attribute value as a char, or <code>def</code> if not found.
 	 */
 	public char getAttributeChar(String attr, char def)
 	{
@@ -358,6 +373,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * Gets the int value of an attribute.
 	 * If the attribute does not exist, this returns the empty string.
 	 * @param attr the attribute name.
+	 * @return the attribute value as an integer, or 0 if not found.
 	 */
 	public int getAttributeInt(String attr)
 	{
@@ -370,6 +386,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * If the attribute does not exist, this returns <code>def</code>.
 	 * @param attr the attribute name.
 	 * @param def the default value to return if the attribute does not exist.
+	 * @return the attribute value as an integer, or <code>def</code> if not found.
 	 */
 	public int getAttributeInt(String attr, int def)
 	{
@@ -381,6 +398,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * Gets the long value of an attribute.
 	 * If the attribute does not exist, this returns the empty string.
 	 * @param attr the attribute name.
+	 * @return the attribute value as a long, or 0L if not found.
 	 */
 	public long getAttributeLong(String attr)
 	{
@@ -393,6 +411,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * If the attribute does not exist, this returns <code>def</code>.
 	 * @param attr the attribute name.
 	 * @param def the default value to return if the attribute does not exist.
+	 * @return the attribute value as a long, or <code>def</code> if not found.
 	 */
 	public long getAttributeLong(String attr, long def)
 	{
@@ -404,6 +423,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * Gets the short value of an attribute.
 	 * If the attribute does not exist, this returns the empty string.
 	 * @param attr the attribute name.
+	 * @return the attribute value as a float, or 0f if not found.
 	 */
 	public float getAttributeFloat(String attr)
 	{
@@ -416,6 +436,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * If the attribute does not exist, this returns <code>def</code>.
 	 * @param attr the attribute name.
 	 * @param def the default value to return if the attribute does not exist.
+	 * @return the attribute value as a float, or <code>def</code> if not found.
 	 */
 	public float getAttributeFloat(String attr, float def)
 	{
@@ -427,6 +448,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * Gets the double value of an attribute.
 	 * If the attribute does not exist, this returns the empty string.
 	 * @param attr the attribute name.
+	 * @return the attribute value as a double, or 0.0 if not found.
 	 */
 	public double getAttributeDouble(String attr)
 	{
@@ -439,6 +461,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 * If the attribute does not exist, this returns <code>def</code>.
 	 * @param attr the attribute name.
 	 * @param def the default value to return if the attribute does not exist.
+	 * @return the attribute value as a double, or <code>def</code> if not found.
 	 */
 	public double getAttributeDouble(String attr, double def)
 	{
@@ -467,6 +490,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the value of the structure.
+	 * @param value the value to set.
 	 */
 	public void setValue(String value)
 	{
@@ -475,6 +499,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the value of the structure.
+	 * @param value the value to set.
 	 */
 	public void setValue(boolean value)
 	{
@@ -483,6 +508,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the value of the structure.
+	 * @param value the value to set.
 	 */
 	public void setValue(byte value)
 	{
@@ -491,6 +517,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the value of the structure.
+	 * @param value the value to set.
 	 */
 	public void setValue(char value)
 	{
@@ -499,6 +526,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the value of the structure.
+	 * @param value the value to set.
 	 */
 	public void setValue(short value)
 	{
@@ -507,6 +535,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the value of the structure.
+	 * @param value the value to set.
 	 */
 	public void setValue(int value)
 	{
@@ -515,6 +544,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the value of the structure.
+	 * @param value the value to set.
 	 */
 	public void setValue(long value)
 	{
@@ -523,6 +553,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the value of the structure.
+	 * @param value the value to set.
 	 */
 	public void setValue(float value)
 	{
@@ -531,6 +562,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Sets the value of the structure.
+	 * @param value the value to set.
 	 */
 	public void setValue(double value)
 	{
@@ -539,6 +571,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	
 	/**
 	 * Gets the String value of the structure.
+	 * @return the structure as a string.
 	 */
 	public String getValue()
 	{
@@ -558,7 +591,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 
 	/**
-	 * Gets the byte value of the structure.
+	 * @return the byte value of the structure.
 	 */
 	public byte getValueByte()
 	{
@@ -566,7 +599,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 
 	/**
-	 * Gets the short value of the structure.
+	 * @return the short value of the structure.
 	 */
 	public short getValueShort()
 	{
@@ -574,7 +607,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 
 	/**
-	 * Gets the char value of the structure.
+	 * @return the char value of the structure.
 	 */
 	public char getValueChar()
 	{
@@ -582,7 +615,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 
 	/**
-	 * Gets the int value of the structure.
+	 * @return the int value of the structure.
 	 */
 	public int getValueInt()
 	{
@@ -590,7 +623,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 
 	/**
-	 * Gets the long value of the structure.
+	 * @return the long value of the structure.
 	 */
 	public long getValueLong()
 	{
@@ -598,7 +631,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 
 	/**
-	 * Gets the short value of the structure.
+	 * @return the short value of the structure.
 	 */
 	public float getValueFloat()
 	{
@@ -606,7 +639,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	}
 
 	/**
-	 * Gets the double value of the structure.
+	 * @return the double value of the structure.
 	 */
 	public double getValueDouble()
 	{

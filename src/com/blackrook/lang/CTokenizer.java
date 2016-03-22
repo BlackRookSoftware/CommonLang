@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -201,7 +201,7 @@ public class CTokenizer implements Iterable<String>
 	}
 	
 	/**
-	 * Returns true if there are any tokens left. False if not.
+	 * @return true if there are any tokens left. False if not.
 	 */
 	public boolean hasMoreTokens()
 	{
@@ -210,6 +210,7 @@ public class CTokenizer implements Iterable<String>
 
 	/**
 	 * Add any ol' String to the tokenizer.
+	 * @param s the string to add.
 	 */
 	public void add(String s)
 	{
@@ -217,7 +218,7 @@ public class CTokenizer implements Iterable<String>
 	}
 
 	/**
-	 * Returns how many tokens are left in the tokenizer.
+	 * @return how many tokens are left in the tokenizer.
 	 */
 	public int size()
 	{
@@ -226,15 +227,14 @@ public class CTokenizer implements Iterable<String>
 	
 	/**
 	 * Peek at the topmost token (but don't remove it).
+	 * @return the next string
 	 */
 	public String peek()
 	{
 		return tokenList.head();
 	}
 	
-	/**
-	 * Returns a new Iterator<String> for the rest of the tokens in the list.
-	 */
+	@Override
 	public Iterator<String> iterator()
 	{
 		return tokenList.iterator();

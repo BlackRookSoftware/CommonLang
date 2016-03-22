@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ public class JSONObject
 	{
 		/** Undefined type for undefined. */ 
 		UNDEFINED,
-		/** Object type for objects, or null. Stored as HashMap<String, JSONObject>, or null. */
+		/** Object type for objects, or null. Stored as HashMap&lt;String, JSONObject&gt;, or null. */
 		OBJECT,
 		/** Numeric type. */
 		NUMBER,
@@ -71,9 +71,12 @@ public class JSONObject
 	
 	/**
 	 * Gets a converter for a type.
+	 * @param <E> the class type.
+	 * @param clazz the class to get the converter for.
+	 * @return a converter to use for JSON conversion.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <E extends Object> JSONConverter<E> getConverter(Class<E> clazz)
+	public static <E> JSONConverter<E> getConverter(Class<E> clazz)
 	{
 		JSONConverter<E> out = null;
 		if ((out = (JSONConverter<E>)REGISTERED_CONVERTERS.get(clazz)) == null)
@@ -103,18 +106,23 @@ public class JSONObject
 	
 	/**
 	 * Sets a converter for a type.
+	 * @param <E> the class type.
+	 * @param clazz the class to get the converter for.
+	 * @param converter the converter to use for JSON conversion.
 	 */
-	public static <E extends Object> void setConverter(Class<E> clazz, JSONConverter<E> comparator)
+	public static <E extends Object> void setConverter(Class<E> clazz, JSONConverter<E> converter)
 	{
-		REGISTERED_CONVERTERS.put(clazz, comparator);
+		REGISTERED_CONVERTERS.put(clazz, converter);
 	}
 	
 	/**
 	 * Creates a new JSON object.
 	 * Objects may have an internal converter.
+	 * @param <T> the object type used for finding a converter.
 	 * @param object the object to encapsulate.
+	 * @return the JSONObject representing the input object.
 	 */
-	public static <T extends Object> JSONObject create(T object)
+	public static <T> JSONObject create(T object)
 	{
 		if (object == null)
 			return NULL;
@@ -144,6 +152,7 @@ public class JSONObject
 	
 	/**
 	 * Creates a JSONObject that represents an empty object type.
+	 * @return a JSONObject representing a blank object.
 	 */
 	public static JSONObject createEmptyObject()
 	{
@@ -152,6 +161,7 @@ public class JSONObject
 	
 	/**
 	 * Creates a JSONObject that represents an empty array type.
+	 * @return a JSONObject representing an empty array.
 	 */
 	public static JSONObject createEmptyArray()
 	{
@@ -173,6 +183,7 @@ public class JSONObject
 
 	/**
 	 * Gets this object's JavaScript type.
+	 * @return the object type.
 	 */
 	public Type getType()
 	{
@@ -180,7 +191,8 @@ public class JSONObject
 	}
 	
 	/**
-	 * Returns true if this is Object-typed, false otherwise.
+	 * Checks if this is Object-typed.
+	 * @return true if so, false if not.
 	 */
 	public boolean isObject()
 	{
@@ -188,7 +200,8 @@ public class JSONObject
 	}
 	
 	/**
-	 * Returns true if this is Object-typed and is an array.
+	 * Checks if this is Object-typed and is an array.
+	 * @return true if so, false if not.
 	 */
 	public boolean isArray()
 	{
@@ -196,7 +209,8 @@ public class JSONObject
 	}
 
 	/**
-	 * Returns the length of this array if this is an array, or -1 if not an array.
+	 * Gets length of this array-typed object.
+	 * @return the length of this array if this is an array, or -1 if not an array.
 	 */
 	public int length()
 	{
@@ -204,23 +218,31 @@ public class JSONObject
 	}
 
 	/**
-	 * Returns the amount of members in this object,
-	 * if this is an object.
+	 * Gets the amount of members in this object, if this is an object.
+	 * If this is an array, this returns its length.
+	 * @return the member count, or 0 if not an object.
+	 * @see #length()
 	 */
 	public int getMemberCount()
 	{
 		return isArray() ? length() : (isObject() ? getMap().size() : 0);
 	}
 
+	/** 
+	 * Returns the underlying value as a map of string to object.
+	 * @return the map.   
+	 */
 	@SuppressWarnings("unchecked")
-	/** Returns the value as a map of string to object. */
 	protected HashMap<String, JSONObject> getMap()
 	{
 		return (HashMap<String, JSONObject>)value;
 	}
 	
+	/** 
+	 * Returns the underlying value as a list of objects. 
+	 * @return the list.   
+	 */
 	@SuppressWarnings("unchecked")
-	/** Returns the value as a list of objects. */
 	protected List<JSONObject> getList()
 	{
 		return (List<JSONObject>)value;
@@ -256,7 +278,8 @@ public class JSONObject
 	}
 	
 	/**
-	 * Returns true if this is a null object.
+	 * Checks if this is a null object.
+	 * @return true if so, false if not.
 	 */
 	public boolean isNull()
 	{
@@ -264,7 +287,8 @@ public class JSONObject
 	}
 	
 	/**
-	 * Returns true if this is UNDEFINED.
+	 * Checks if this is UNDEFINED.
+	 * @return true if so, false if not.
 	 */
 	public boolean isUndefined()
 	{
@@ -273,6 +297,7 @@ public class JSONObject
 	
 	/**
 	 * Gets this object's encapsulated value. Can be null.
+	 * @return the underlying value.
 	 */
 	public Object getValue()
 	{
@@ -282,6 +307,7 @@ public class JSONObject
 	/**
 	 * Returns true if this is an object AND contains a member of a particular name.
 	 * @param memberName the name of the member to check.
+	 * @return true if it exists on the object, false if not or not an object.
 	 */
 	public boolean hasMember(String memberName)
 	{
@@ -337,7 +363,7 @@ public class JSONObject
 	
 	/**
 	 * Returns the value of this JSON Object as a byte.
-	 * If this cannot be reasonably converted to a byte, then this returns 0.
+	 * @return the byte value, or 0 if this cannot be reasonably converted to a byte.
 	 */
 	public byte getByte()
 	{
@@ -357,7 +383,7 @@ public class JSONObject
 	
 	/**
 	 * Returns the value of this JSON Object as a short.
-	 * If this cannot be reasonably converted to a short, then this returns 0.
+	 * @return the short value, or 0 if this cannot be reasonably converted to a short.
 	 */
 	public short getShort()
 	{
@@ -377,7 +403,7 @@ public class JSONObject
 	
 	/**
 	 * Returns the value of this JSON Object as an integer.
-	 * If this cannot be reasonably converted to an integer, then this returns 0.
+	 * @return the integer value, or 0 if this cannot be reasonably converted to an integer.
 	 */
 	public int getInt()
 	{
@@ -397,7 +423,7 @@ public class JSONObject
 	
 	/**
 	 * Returns the value of this JSON Object as a float.
-	 * If this cannot be reasonably converted to a float, then this returns 0f.
+	 * @return the float value, or 0f if this cannot be reasonably converted to a float.
 	 */
 	public float getFloat()
 	{
@@ -417,7 +443,7 @@ public class JSONObject
 	
 	/**
 	 * Returns the value of this JSON Object as a long.
-	 * If this cannot be reasonably converted to a long, then this returns 0L.
+	 * @return the long value, or 0L if this cannot be reasonably converted to a long.
 	 */
 	public long getLong()
 	{
@@ -437,7 +463,7 @@ public class JSONObject
 	
 	/**
 	 * Returns the value of this JSON Object as a double.
-	 * If this cannot be reasonably converted to a double, then this returns 0.0.
+	 * @return the double value, or 0.0 if this cannot be reasonably converted to a long.
 	 */
 	public double getDouble()
 	{
@@ -457,14 +483,15 @@ public class JSONObject
 	
 	/**
 	 * Returns the value of this JSON Object as an boolean.
-	 * If this cannot be reasonably converted to an boolean, then this returns 0.
+	 * Non-null Objects are always true, <i>undefined</i> is always false.
+	 * @return the boolean value, or false if this cannot be reasonably converted to a boolean.
 	 */
 	public boolean getBoolean()
 	{
 		if (type == Type.UNDEFINED)
 			return false;
 		else if (type == Type.OBJECT)
-			return false;
+			return !isNull();
 		else if (value instanceof Boolean)
 			return ((Boolean)value);
 		else if (value instanceof Number)
@@ -479,6 +506,7 @@ public class JSONObject
 	 * Returns the value of this JSON Object as a String.
 	 * If the value of this object is undefined or null, null is returned.
 	 * If this is an object, <code>Object</code> is returned.
+	 * @return the string value, or false if this cannot be reasonably converted to a boolean.
 	 */
 	public String getString()
 	{
@@ -523,6 +551,7 @@ public class JSONObject
 	 * If this is not an object (or array), this causes an error.
 	 * WARNING: Array types are promoted to objects whether or not this succeeds.
 	 * @param name the name of the member to remove.
+	 * @return true if the member was removed, false if not.
 	 * @throws IllegalStateException if this JSONObject is not an Object type 
 	 * ({@link #isObject()} is false) or is null ({@link #isNull()} is true) or is UNDEFINED ({@link #isUndefined()} is true).
 	 */
@@ -661,7 +690,8 @@ public class JSONObject
 	
 	/**
 	 * Adds a member to a specific index in this JSONObject, shifting the contents,
-	 * but only if this is an array. 
+	 * but only if this is an array.
+	 * @param index the index into the array. 
 	 * @param object the object to add.
 	 * @see #isArray()
 	 * @throws IllegalStateException if this JSONObject is not an array type.
@@ -706,14 +736,14 @@ public class JSONObject
 	 * <p>
 	 * If the input object is an array, then the contents of the indices are replaced,
 	 * up to the length of the input array or this JSON array, whichever's shorter.
-	 * 
+	 * @param <T> the return type.
 	 * @param clazz the class to instantiate and apply.
 	 * @return a new instance of this object, or null if this object's value is null (see {@link #isNull()}.
 	 * @throws RuntimeException if the object cannot be created.
 	 * @throws JSONConversionException if an error occurs during conversion/application.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Object> T newObject(Class<T> clazz)
+	public <T> T newObject(Class<T> clazz)
 	{
 		if (isNull())
 			return null;
@@ -771,13 +801,13 @@ public class JSONObject
 	 * <p>
 	 * If the input object is an array, then the contents of the indices are replaced,
 	 * up to the length of the input array or this JSON array, whichever's shorter.
-	 * 
+	 * @param <T> the return type.
 	 * @param object the object to set the fields/indices of.
 	 * @return the input object.
 	 * @throws JSONConversionException if an error occurs during conversion/application.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Object> T applyToObject(T object)
+	public <T> T applyToObject(T object)
 	{
 		if (Reflect.isArray(object))
 		{
@@ -822,7 +852,7 @@ public class JSONObject
 
 	// Creates an object for application later.
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static <T extends Object> T createForType(String memberName, JSONObject jsonObject, Class<T> type)
+	private static <T> T createForType(String memberName, JSONObject jsonObject, Class<T> type)
 	{
 		Type jsonType = jsonObject.getType();
 		

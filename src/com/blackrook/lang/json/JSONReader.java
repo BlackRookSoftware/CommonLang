@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ public class JSONReader
 	 * This does not close the stream after reading, and reads the first structure
 	 * that it finds.
 	 * @param in the input stream to read from.
+	 * @return the parsed JSONObject.
 	 * @throws IOException if the stream can't be read, or an error occurs.
 	 * @throws JSONConversionException if a parsing error occurs, or the JSON is malformed.
 	 */
@@ -42,6 +43,7 @@ public class JSONReader
 	 * This does not close the stream after reading, and reads the first structure
 	 * that it finds.
 	 * @param reader the reader to read from.
+	 * @return the parsed JSONObject.
 	 * @throws IOException if the stream can't be read, or a read error occurs.
 	 * @throws JSONConversionException if a parsing error occurs, or the JSON is malformed.
 	 */
@@ -53,6 +55,7 @@ public class JSONReader
 	/**
 	 * Reads in a new JSONObject from a string of characters.
 	 * @param data the string to read.
+	 * @return the parsed JSONObject.
 	 * @throws IOException if the string can't be read, or a read error occurs.
 	 * @throws JSONConversionException if a parsing error occurs, or the JSON is malformed.
 	 */
@@ -65,7 +68,10 @@ public class JSONReader
 	 * Reads in a new object from an InputStream.
 	 * This does not close the stream after reading, and reads the first structure
 	 * that it finds and returns it as a new object converted from the JSON.
+	 * @param <T> the returned class type.
+	 * @param clazz the class type to read.
 	 * @param in the input stream to read from.
+	 * @return the applied object, already converted.
 	 * @throws IOException if the stream can't be read, or an error occurs.
 	 * @throws JSONConversionException if a parsing error occurs, or the JSON is malformed.
 	 * @since 2.5.1
@@ -79,7 +85,10 @@ public class JSONReader
 	 * Reads in a new object from a Reader.
 	 * This does not close the stream after reading, and reads the first structure
 	 * that it finds and returns it as a new object converted from the JSON.
+	 * @param <T> the returned class type.
+	 * @param clazz the class type to read.
 	 * @param reader the reader to read from.
+	 * @return the applied object, already converted.
 	 * @throws IOException if the stream can't be read, or a read error occurs.
 	 * @throws JSONConversionException if a parsing error occurs, or the JSON is malformed.
 	 * @since 2.5.1
@@ -92,7 +101,10 @@ public class JSONReader
 	/**
 	 * Reads in a new object from a string of characters and returns it as a 
 	 * new object converted from the JSON.
+	 * @param <T> the returned class type.
+	 * @param clazz the class type to read.
 	 * @param data the string to read.
+	 * @return the applied object, already converted.
 	 * @throws IOException if the string can't be read, or a read error occurs.
 	 * @throws JSONConversionException if a parsing error occurs, or the JSON is malformed.
 	 * @since 2.5.1
@@ -102,10 +114,7 @@ public class JSONReader
 		return readJSON(data).newObject(clazz);
 	}
 
-	/**
-	 * Lexer class for use in scanning text data for JSON data. 
-	 */
-	private static class JSONLexer extends Lexer
+	private static class JSONLexerKernel extends LexerKernel
 	{
 		static final int TYPE_TRUE = 		0;
 		static final int TYPE_FALSE = 		1;
@@ -118,8 +127,8 @@ public class JSONReader
 		static final int TYPE_RBRACK = 		8;
 		static final int TYPE_MINUS = 		9;
 
-		static final LexerKernel KERNEL = new LexerKernel()
-		{{
+		private JSONLexerKernel()
+		{
 			addStringDelimiter('"', '"');
 			addStringDelimiter('\'', '\'');
 			
@@ -136,8 +145,16 @@ public class JSONReader
 			addKeyword("null", TYPE_NULL);
 			
 			setDecimalSeparator('.');
-		}}; 
-		
+		}
+	}
+	
+	private static final JSONLexerKernel KERNEL = new JSONLexerKernel();
+	
+	/**
+	 * Lexer class for use in scanning text data for JSON data. 
+	 */
+	private static class JSONLexer extends Lexer
+	{
 		JSONLexer(Reader in)
 		{
 			super(KERNEL, in);
@@ -191,10 +208,10 @@ public class JSONReader
 		// Value.
 		private boolean Value()
 		{
-			if (currentType(JSONLexer.TYPE_MINUS))
+			if (currentType(JSONLexerKernel.TYPE_MINUS))
 			{
 				nextToken();
-				if (currentType(JSONLexer.TYPE_NUMBER))
+				if (currentType(JSONLexerKernel.TYPE_NUMBER))
 				{
 					if (!ParseNumber("-"+currentToken().getLexeme()))
 						return false;
@@ -203,7 +220,7 @@ public class JSONReader
 				nextToken();
 				return true;
 			}
-			else if (currentType(JSONLexer.TYPE_NUMBER))
+			else if (currentType(JSONLexerKernel.TYPE_NUMBER))
 			{
 				if (!ParseNumber(currentToken().getLexeme()))
 					return false;
@@ -211,51 +228,57 @@ public class JSONReader
 				nextToken();
 				return true;
 			}
-			else if (currentType(JSONLexer.TYPE_STRING))
+			else if (currentType(JSONLexerKernel.TYPE_STRING))
 			{
 				currentObject.push(JSONObject.create(currentToken().getLexeme()));
 				nextToken();
 				return true;
 			}
-			else if (currentType(JSONLexer.TYPE_TRUE))
+			else if (currentType(JSONLexerKernel.TYPE_TRUE))
 			{
 				currentObject.push(JSONObject.create(Boolean.TRUE));
 				nextToken();
 				return true;
 			}
-			else if (currentType(JSONLexer.TYPE_FALSE))
+			else if (currentType(JSONLexerKernel.TYPE_FALSE))
 			{
 				currentObject.push(JSONObject.create(Boolean.FALSE));
 				nextToken();
 				return true;
 			}
-			else if (currentType(JSONLexer.TYPE_NULL))
+			else if (currentType(JSONLexerKernel.TYPE_NULL))
 			{
 				currentObject.push(JSONObject.create(null));
 				nextToken();
 				return true;
 			}
-			else if (currentType(JSONLexer.TYPE_LBRACK))
+			else if (currentType(JSONLexerKernel.TYPE_LBRACK))
 			{
 				nextToken();
 				currentObject.push(JSONObject.createEmptyArray());
 				if (!ArrayValue())
 					return false;
 				
-				if (!matchTypeStrict(JSONLexer.TYPE_RBRACK))
+				if (!matchType(JSONLexerKernel.TYPE_RBRACK))
+				{
+					addErrorMessage("Expected ']'");
 					return false;
+				}
 				
 				return true;
 			}
-			else if (currentType(JSONLexer.TYPE_LBRACE))
+			else if (currentType(JSONLexerKernel.TYPE_LBRACE))
 			{
 				nextToken();
 				currentObject.push(JSONObject.createEmptyObject());
 				if (!ObjectValue())
 					return false;
 				
-				if (!matchTypeStrict(JSONLexer.TYPE_RBRACE))
+				if (!matchType(JSONLexerKernel.TYPE_RBRACE))
+				{
+					addErrorMessage("Expected '}'");
 					return false;
+				}
 				
 				return true;
 			}
@@ -286,7 +309,7 @@ public class JSONReader
 		 */
 		private boolean ArrayBody()
 		{
-			if (currentType(JSONLexer.TYPE_COMMA))
+			if (currentType(JSONLexerKernel.TYPE_COMMA))
 			{
 				nextToken();
 				
@@ -309,13 +332,16 @@ public class JSONReader
 		 */
 		private boolean ObjectValue()
 		{
-			if (currentType(JSONLexer.TYPE_STRING, JSONLexer.TYPE_IDENTIFIER))
+			if (currentType(JSONLexerKernel.TYPE_STRING, JSONLexerKernel.TYPE_IDENTIFIER))
 			{
 				currentMember.push(currentToken().getLexeme());
 				nextToken();
 				
-				if (!matchTypeStrict(JSONLexer.TYPE_COLON))
+				if (!matchType(JSONLexerKernel.TYPE_COLON))
+				{
+					addErrorMessage("Expected ':'");
 					return false;
+				}
 				
 				if (Value())
 				{
@@ -336,11 +362,11 @@ public class JSONReader
 		 */
 		private boolean ObjectBody()
 		{
-			if (currentType(JSONLexer.TYPE_COMMA))
+			if (currentType(JSONLexerKernel.TYPE_COMMA))
 			{
 				nextToken();
 				
-				if (!currentType(JSONLexer.TYPE_STRING, JSONLexer.TYPE_IDENTIFIER))
+				if (!currentType(JSONLexerKernel.TYPE_STRING, JSONLexerKernel.TYPE_IDENTIFIER))
 				{
 					addErrorMessage("Expected member name (string or identifier).");
 					return false;
@@ -349,8 +375,11 @@ public class JSONReader
 				currentMember.push(currentToken().getLexeme());
 				nextToken();
 				
-				if (!matchTypeStrict(JSONLexer.TYPE_COLON))
+				if (!matchType(JSONLexerKernel.TYPE_COLON))
+				{
+					addErrorMessage("Expected ':'");
 					return false;
+				}
 				
 				if (Value())
 				{
@@ -415,31 +444,6 @@ public class JSONReader
 			return true;
 		}
 		
-
-		@Override
-		protected String getTypeErrorText(int tokenType)
-		{
-			switch (tokenType)
-			{
-				case JSONLexer.TYPE_LBRACE:
-					return "'{'";
-				case JSONLexer.TYPE_RBRACE:
-					return "'}'";
-				case JSONLexer.TYPE_LBRACK:
-					return "'['";
-				case JSONLexer.TYPE_RBRACK:
-					return "']'";
-				case JSONLexer.TYPE_COLON:
-					return "':'";
-				case JSONLexer.TYPE_COMMA:
-					return "','";
-				case JSONLexer.TYPE_STRING:
-					return "string";
-			}
-			return "";
-		}
-		
 	}
-	
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009-2014 Black Rook Software
+ * Copyright (c) 2009-2016 Black Rook Software
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser Public License v2.1
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ public class PatternParseException extends RuntimeException
 	
 	/**
 	 * Creates a new exception.
+	 * @param message the exception message.
 	 */
 	public PatternParseException(String message)
 	{
@@ -33,6 +34,7 @@ public class PatternParseException extends RuntimeException
 
 	/**
 	 * Creates a new exception.
+	 * @param exception the exception that caused this one, if any.
 	 */
 	public PatternParseException(Throwable exception)
 	{
@@ -41,6 +43,8 @@ public class PatternParseException extends RuntimeException
 	
 	/**
 	 * Creates a new exception with a message.
+	 * @param message the exception message.
+	 * @param exception the exception that caused this one, if any.
 	 */
 	public PatternParseException(String message, Throwable exception)
 	{
