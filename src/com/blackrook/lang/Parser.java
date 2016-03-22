@@ -74,26 +74,6 @@ public abstract class Parser
 	}
 
 	/**
-	 * Matches the current token. If matched, this returns true and advances
-	 * to the next token. Else, this throws an error and returns false.
-	 * @param tokenType the type to match.
-	 * @return true if matched, false if not.
-	 * @deprecated in 2.7.0 - Calls {@link #getTypeErrorText(int)}, 
-	 * 		but this leads to a loss of clarity and freedom with error message creation, and
-	 * 		should not be used.
-	 */
-	protected boolean matchTypeStrict(int tokenType)
-	{
-		if (currentType(tokenType))
-		{
-			nextToken();
-			return true;
-		}
-		addTypeError(tokenType);
-		return false;
-	}
-
-	/**
 	 * Attempts to match the type of the current token. If matched, this returns true.
 	 * This DOES NOT ADVANCE to the next token.
 	 * @param tokenTypes the list of types.
@@ -125,44 +105,6 @@ public abstract class Parser
 	}
 
 	/**
-	 * Returns an error based on an expected type.
-	 * See addErrorMessage().
-	 * @param tokenTypes the type codes for the tokens that should have been matched.
-	 * @deprecated in 2.7.0 - {@link #matchTypeStrict(int)} calls this, 
-	 * 		but this leads to a loss of clarity with error message creation, and
-	 * 		should not be used.
-	 */
-	protected void addTypeError(int ... tokenTypes)
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("Expected");
-		for (int i = 0; i < tokenTypes.length; i++)
-		{
-			sb.append(' ');
-			sb.append(getTypeErrorText(tokenTypes[i]));
-			if (i < tokenTypes.length-1)
-				sb.append(" or");
-		}
-		sb.append('.');
-		addErrorMessage(sb.toString());
-	}
-	
-	/**
-	 * Returns a String form if the token type that was expected.
-	 * Called by addTypeError().
-	 * @param tokenType	the type code for the token that should have been matched.
-	 * @return the String representation of the type.
-	 * @deprecated in 2.7.0 - {@link #matchTypeStrict(int)} calls this, 
-	 * 		but this leads to a loss of clarity with error message creation, and
-	 * 		should not be used.
-	 */
-	@Deprecated
-	protected String getTypeErrorText(int tokenType)
-	{
-		return null;
-	}
-	
-	/**
 	 * Adds an error message to error list along with the current token's information
 	 * (like line number, etc.).
 	 * @param errorMessage the error message.
@@ -184,4 +126,5 @@ public abstract class Parser
 		
 		errorList.add(error);
 	}
+	
 }
