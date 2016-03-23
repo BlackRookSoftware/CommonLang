@@ -1,6 +1,6 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
-Slated for 2.8.0
+Changed in 2.8.0
 ================
 
 - MAJOR: Deprecated packages, classes, and methods PURGED.
