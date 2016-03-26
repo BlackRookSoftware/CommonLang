@@ -1,7 +1,8 @@
 package com.blackrook.lang.replacer;
 
 /**
- * 
+ * The piece of information that drives the {@link KeyReplacer} class.
+ * This interface describes an object that does just that. 
  * @author Matthew Tropiano
  */
 public interface ReplacerKernel

@@ -6,5 +6,12 @@ package com.blackrook.lang.replacer;
  */
 public class KeyReplacer
 {
-
+	/** The replacer kernel. */
+	private ReplacerKernel kernel;
+	
+	public KeyReplacer(ReplacerKernel kernel)
+	{
+		this.kernel = kernel;
+	}
+	
 }
