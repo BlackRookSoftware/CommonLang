@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  ******************************************************************************/
-package com.blackrook.lang.replacer;
+package com.blackrook.lang.replacer.kernel;
 
 /**
  * A replacer kernel that replaces tokens (with no arguments) with another mapped string.
@@ -13,46 +13,37 @@ package com.blackrook.lang.replacer;
  * @author Matthew Tropiano
  * @since 2.9.0
  */
-public abstract class SingleTokenReplacerKernel implements ReplacerKernel
+public abstract class ArgumentTokenReplacerKernel extends SingleTokenReplacerKernel
 {
-	/** Token start character. */
-	protected char tokenStart;
-	/** Token end character. */
-	protected char tokenEnd;
+	/** Argument list separator character. */
+	protected char argumentListStart;
+	/** Argument separator character. */
+	protected char argumentSeparator;
 	
 	/**
-	 * Creates a new mapped replacer kernel with no token keys.
+	 * Creates a new replacer kernel.
 	 * @param tokenStart the token start character.
 	 * @param tokenEnd the token end character.
+	 * @param argumentListStart the character that starts the argument list, if any.
+	 * @param argumentSeparator the argument separator character.
 	 */
-	public SingleTokenReplacerKernel(char tokenStart, char tokenEnd)
+	public ArgumentTokenReplacerKernel(char tokenStart, char tokenEnd, char argumentListStart, char argumentSeparator)
 	{
-		this.tokenStart = tokenStart;
-		this.tokenEnd = tokenEnd;
+		super(tokenStart, tokenEnd);
+		this.argumentListStart = argumentListStart;
+		this.argumentSeparator = argumentSeparator;
 	}
 	
-	@Override
-	public boolean isTokenStarter(char input)
-	{
-		return input == tokenStart;
-	}
-
-	@Override
-	public char getTokenEnder(char input)
-	{
-		return input == tokenStart ? tokenEnd : '\0';
-	}
-
 	@Override
 	public boolean isArgumentListStarter(char input)
 	{
-		return false;
+		return input == argumentListStart;
 	}
 
 	@Override
 	public boolean isArgumentSeparator(char input)
 	{
-		return false;
+		return input == argumentSeparator;
 	}
 
 	@Override
