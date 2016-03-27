@@ -4,10 +4,10 @@ package com.blackrook.lang.replacer;
  * The piece of information that drives the {@link KeyReplacer} class.
  * This interface describes an object that does just that. 
  * @author Matthew Tropiano
+ * @since 2.9.0
  */
 public interface ReplacerKernel
 {
-	
 	/**
 	 * Tests if a character starts a token.
 	 * @param input the input character.
@@ -28,13 +28,6 @@ public interface ReplacerKernel
 	 * @return true if so, false if not.
 	 */
 	public boolean isArgumentListStarter(char input);
-
-	/**
-	 * Gets the matching argument list ender character.
-	 * @param input the input character.
-	 * @return the matching ending character, or '\0' if no character.
-	 */
-	public char getArgumentListEnder(char input);
 
 	/**
 	 * Tests if a character separates arguments.
