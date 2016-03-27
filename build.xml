@@ -26,7 +26,8 @@
 		com.blackrook.lang.json,
 		com.blackrook.lang.json.annotation,
 		com.blackrook.lang.path,
-		com.blackrook.lang.reflect,
+		com.blackrook.lang.replacer,
+		com.blackrook.lang.replacer.kernel,
 		com.blackrook.lang.util,
     	com.blackrook.lang.xml
 		"
