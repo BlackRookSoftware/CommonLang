@@ -4,7 +4,6 @@ Changed in 2.9.0
 ================
 
 - Added: com.blackrook.lang.replacer.
-- Changed: Parser.nextToken() adds an error on exception.
 
 
 Changed in 2.8.0

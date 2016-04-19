@@ -93,7 +93,6 @@ public abstract class Parser
 	/**
 	 * Reads and sets the current token to the next token.
 	 * If the current token is null, it is the end of the Lexer's stream.
-	 * An error message is added as well.
 	 * @throws ParserException if the next token can't be read. 
 	 */
 	protected void nextToken()
@@ -101,7 +100,6 @@ public abstract class Parser
 		try {
 			token = lexer.nextToken();
 		} catch (IOException e) {
-			addErrorMessage(e.getMessage());
 			throw new ParserException(e.getMessage(), e);
 		}
 	}
