@@ -12,8 +12,6 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import com.blackrook.commons.Common;
-
 /**
  * A class for writing JSON data to JSON representation.
  * @author Matthew Tropiano
@@ -163,7 +161,7 @@ public final class JSONWriter
 				for (String member : object.getMemberNames())
 				{
 					writeString("\"");
-					writeString(Common.withEscChars(member));
+					writeString(escape(member));
 					writeString("\":");
 					writeObject(object.get(member));
 					if (i < len - 1)
@@ -192,13 +190,57 @@ public final class JSONWriter
 				else
 				{
 					writeString("\"");
-					writeString(Common.withEscChars(object.getString()));
+					writeString(escape(object.getString()));
 					writeString("\"");
 				}
 			}
 				
 		}
 		
+		private String escape(String s)
+		{
+	    	char[] c = s.toCharArray();
+	    	StringBuilder out = new StringBuilder();
+	    	for (int i = 0; i < c.length; i++)
+	    		switch (c[i])
+	    		{
+					case '\0':
+						out.append("\\0");
+						break;
+	    			case '\b':
+	    				out.append("\\b");
+	    				break;
+	    			case '\t':
+	    				out.append("\\t");
+	    				break;
+	    			case '\n':
+	    				out.append("\\n");
+	    				break;
+	    			case '\f':
+	    				out.append("\\f");
+	    				break;
+	    			case '\r':
+	    				out.append("\\r");
+	    				break;
+	    			case '\\':
+	    				out.append("\\\\");
+	    				break;
+	    			case '"':
+	    				out.append("\\\"");    					
+	    				break;
+	    			case '\'':
+	    				out.append("\\\'");    					
+	    				break;
+	    			default:
+	    				if (c[i] < 0x0020 || c[i] >= 0x7f)
+	    					out.append("\\u"+String.format("%04x", c[i]));
+	    				else
+	    					out.append(c[i]);
+	    				break;
+	    		}
+	    	
+	    	return out.toString();
+		}
 		
 	}
 	
