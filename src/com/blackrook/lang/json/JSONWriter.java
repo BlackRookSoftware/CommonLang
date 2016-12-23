@@ -228,9 +228,6 @@ public final class JSONWriter
 	    			case '"':
 	    				out.append("\\\"");    					
 	    				break;
-	    			case '\'':
-	    				out.append("\\\'");    					
-	    				break;
 	    			default:
 	    				if (c[i] < 0x0020 || c[i] >= 0x7f)
 	    					out.append("\\u"+String.format("%04x", c[i]));
