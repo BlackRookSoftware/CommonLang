@@ -297,7 +297,7 @@ public class CommonLexer extends Lexer
 	 * @param currentStreamName the name/path of the current stream.
 	 * @param includePath the path taken from the <code>#include</code> directive.
 	 * @return the presumably valid resource name to use (to pass to {@link #getResource(String)}).
-	 * @throws IOExeption if the resolution of this new name incurs an IOException. 
+	 * @throws IOException if the resolution of this new name incurs an IOException. 
 	 * @since 2.9.1
 	 */
 	protected String getNextResourceName(String currentStreamName, String includePath) throws IOException
