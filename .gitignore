@@ -2,6 +2,7 @@
 /build
 /.idea
 build.properties
+build.log
 .settings
 .classpath
 .project

@@ -294,7 +294,10 @@ public class CommonLexer extends Lexer
 	 * Returns the next path to use for resolving an included resource, given the current stream. 
 	 * Unless overridden, this returns <code>(new File(currentStreamName)).getParentFile().getPath() + File.pathSeparator + includePath</code>
 	 * but if it doesn't exist, then <code>includePath</code>.
+	 * @param currentStreamName the name/path of the current stream.
 	 * @param includePath the path taken from the <code>#include</code> directive.
+	 * @return the presumably valid resource name to use (to pass to {@link #getResource(String)}).
+	 * @throws IOExeption if the resolution of this new name incurs an IOException. 
 	 * @since 2.9.1
 	 */
 	protected String getNextResourceName(String currentStreamName, String includePath) throws IOException
