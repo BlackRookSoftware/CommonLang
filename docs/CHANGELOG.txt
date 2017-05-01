@@ -1,5 +1,11 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
+Slated for 2.9.1
+================
+
+- Changed: JSON string writing is more strict with character ranges.
+- Added: CommonLexer.pushIncludedResource(String).
+
 Changed in 2.9.0
 ================
 
