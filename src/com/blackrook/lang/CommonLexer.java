@@ -147,15 +147,16 @@ public class CommonLexer extends Lexer
 			if (ptok != null && ptok.getType() == CommonLexerKernel.TYPE_STRING)
 			{
 				String pathname = ptok.getLexeme();
-				
 				InputStreamReader reader;
-				InputStream in = getResource(pathname);
+				
+				String nextname = getNextResourceName(getCurrentStreamName(), pathname);
+				InputStream in = getResource(nextname);
 				
 				if (in == null)
-					throw createException("Include directive: Resource named '"+ptok.getLexeme()+"' could not be found.");
+					throw createException("Include directive: Resource named '"+nextname+"' could not be found.");
 				reader = new InputStreamReader(in);
 				
-				pushStream(pathname, reader);
+				pushStream(nextname, reader);
 				return nextToken();
 			}
 			else 
@@ -290,20 +291,32 @@ public class CommonLexer extends Lexer
 	}
 
 	/**
+	 * Returns the next path to use for resolving an included resource, given the current stream. 
+	 * Unless overridden, this returns <code>(new File(currentStreamName)).getParentFile().getPath() + File.pathSeparator + includePath</code>
+	 * but if it doesn't exist, then <code>includePath</code>.
+	 * @param includePath the path taken from the <code>#include</code> directive.
+	 * @since 2.9.1
+	 */
+	protected String getNextResourceName(String currentStreamName, String includePath) throws IOException
+	{
+		String parentPath = new File(currentStreamName).getParentFile().getPath(); 
+		File parentSearchFile = new File(parentPath + File.pathSeparator + includePath);
+		if (parentSearchFile.exists())
+			return parentSearchFile.getPath();
+		else
+			return includePath;
+	}
+	
+	/**
 	 * Returns an open input stream to a resource at a specified path in an "include" directive.
-	 * @param path the resource path to "include".
+	 * Assumes that the input path does NOT need additional resolving.
+	 * @param resourcePath the resource path to "include".
 	 * @return an open input stream to the resolved resource.
 	 * @throws IOException if the stream cannot be opened.
 	 */
-	protected InputStream getResource(String path) throws IOException
+	protected InputStream getResource(String resourcePath) throws IOException
 	{
-		String parentPath = new File(getCurrentStreamName()).getParentFile().getPath(); 
-		File parentSearchFile = new File(parentPath + File.pathSeparator + path);
-		if (parentSearchFile.exists())
-			return new FileInputStream(parentSearchFile);
-		
-		File file = new File(path);
-		return new FileInputStream(file);
+		return new FileInputStream(resourcePath);
 	}
 	
 	/**
