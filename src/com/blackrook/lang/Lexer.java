@@ -126,6 +126,15 @@ public class Lexer
 	}
 	
 	/**
+	 * @return the reference to the lexer's reader stack (be careful with this!).
+	 * @since 2.10.0
+	 */
+	public ReaderStack getReaderStack()
+	{
+		return readerStack;
+	}
+	
+	/**
 	 * @return the lexer's current stream name.
 	 */
 	public String getCurrentStreamName()

@@ -36,6 +36,16 @@ public abstract class Parser
 	}
 	
 	/**
+	 * Gets the {@link Lexer} that this Parser uses.
+	 * @return the underlying Lexer.
+	 * @since 2.10.0
+	 */
+	public Lexer getLexer()
+	{
+		return lexer;
+	}
+	
+	/**
 	 * Gets the list of error messages.
 	 * @return an array of error messages.
 	 */
