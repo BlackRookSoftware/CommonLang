@@ -48,6 +48,9 @@ public class CommonLexer extends Lexer
 	/** In if block? */
 	private Stack<Boolean> ifBlockStack;
 
+	/** List of error messages. */
+	private List<String> preprocessorErrorList;
+
 	/**
 	 * Creates a new lexer around a String, that will
 	 * be wrapped into a StringReader class chain.
@@ -94,6 +97,7 @@ public class CommonLexer extends Lexer
 		tokenStack = new Stack<Lexer.Token>();
 		defineTable = new HashMap<String, MacroSet>();
 		ifBlockStack = new Stack<Boolean>();
+		preprocessorErrorList = new List<String>();
 	}
 
 	@Override
@@ -320,6 +324,35 @@ public class CommonLexer extends Lexer
 	protected InputStream getResource(String resourcePath) throws IOException
 	{
 		return new FileInputStream(resourcePath);
+	}
+	
+	/**
+	 * Adds a preprocessor error message to error list along with the current token's information
+	 * (like line number, etc.).
+	 * @param errorMessage the error message.
+	 * @param lexeme the current lexeme.
+	 */
+	protected void addPreprocessorErrorMessage(String errorMessage, String lexeme)
+	{
+		String error = "("+getCurrentStreamName()+") " +
+			"Line "+(getCurrentLine())+
+			", Token \""+lexeme+
+			"\": "+errorMessage;
+		
+		preprocessorErrorList.add(error);
+	}
+
+	/**
+	 * Gets the list of error messages.
+	 * @return an array of error messages.
+	 */
+	public String[] getErrorMessages()
+	{
+		String[] out = new String[preprocessorErrorList.size()];
+		int i = 0;
+		for (String s : preprocessorErrorList)
+			out[i++] = s;
+		return out;
 	}
 	
 	/**

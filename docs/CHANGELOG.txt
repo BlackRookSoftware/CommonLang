@@ -1,5 +1,14 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
+Slated for 2.10.0
+=================
+
+- Added: ReaderStack. Separated out of Lexer.
+- Changed: Lexers can now the wrapped around separate ReaderStacks.
+- Changed: Moved preprocessor error stuff to the CommonLexer from Lexer - 
+  that's the only thing that used it.
+
+
 Changed in 2.9.1
 ================
 

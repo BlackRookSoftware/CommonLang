@@ -9,12 +9,13 @@ package com.blackrook.lang;
 
 import java.text.DecimalFormatSymbols;
 
+import com.blackrook.commons.Common;
 import com.blackrook.commons.hash.CaseInsensitiveHashMap;
 import com.blackrook.commons.hash.HashMap;
 import com.blackrook.commons.list.SortedList;
 
 /**
- * 
+ * This is a info kernel that tells a {@link Lexer} how to interpret certain characters and identifiers.
  * @author Matthew Tropiano
  * @since 2.3.0, the information that is used by the lexer in order to
  * scan text for individual tokens was separated out to this class.
@@ -171,12 +172,12 @@ public class LexerKernel
 	private void typeCheck(int type)
 	{
 		if (type < 0)
-			throw new IllegalArgumentException("Type cannot be < 0.");
+			throw new IllegalArgumentException("Type cannot be less than 0.");
 	}
 	
 	private void keyCheck(String name)
 	{
-		if (name == null || name.length() == 0)
+		if (Common.isEmpty(name))
 			throw new IllegalArgumentException("String cannot be null nor empty.");
 	}
 

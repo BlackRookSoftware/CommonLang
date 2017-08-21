@@ -7,14 +7,12 @@
  ******************************************************************************/
 package com.blackrook.lang;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
 import com.blackrook.commons.Common;
-import com.blackrook.commons.linkedlist.Stack;
-import com.blackrook.commons.list.List;
+import com.blackrook.lang.ReaderStack.Stream;
 
 import static com.blackrook.lang.LexerKernel.*;
 
@@ -22,39 +20,38 @@ import static com.blackrook.lang.LexerKernel.*;
  * Class used for breaking up a stream of characters into lexicographical tokens.
  * Spaces, newlines, tabs, and breaks in the stream are added if desired,
  * otherwise, they are stripped out. 
- * 
+ * <p>
  * Special delimiter characters take precedence over String delimiters.
  * String delimiter characters take precedence over regular delimiters.
  * Delimiter characters take parsing priority over other characters.
  * Delimiter evaluation priority goes: CommentDelimiter, Delimiter.
  * Identifier evaluation priority goes: Keyword, CaseInsensitiveKeyword, Identifier.
- *
+ * <p>
+ * The Lexer will also automatically manipulate {@link ReaderStack}s once it reaches the end of a stream.
+ * Other implementations of this class may manipulate the stack as well (such as ones that do in-language stream inclusion).
+ * <p>
+ * If the system property <code>com.blackrook.lang.Lexer.debug</code> is set to <code>true</code>, this does debugging output to {@link System#out}.
+ * 
  * @author Matthew Tropiano
  * @since 2.3.0, this now supports integers/floating-point numbers with exponent notation,
  * and separates the configuration for how Lexers scan for information with {@link LexerKernel}.
+ * @since 2.10.0, this had its stream stack separated out into a separate object.
  */
 public class Lexer
 {
 	public static boolean DEBUG = Common.parseBoolean(System.getProperty(Lexer.class.getName()+".debug"), false);
 	
-	/** Default lexer name. */
-	public static final String DEFAULT_NAME = "Lexer";
-	
-	/** Lexer end-of-stream char. */
-	public static final char END_OF_STREAM = '\ufffe';
 	/** Lexer end-of-stream char. */
 	public static final char END_OF_LEXER = '\uffff';
 	/** Lexer newline char. */
 	public static final char NEWLINE = '\n';
 	
+	/** The current stream stack. */
+	private ReaderStack readerStack;
 	/** The lexer kernel to use. */
 	private LexerKernel kernel;
-	/** Stream stack. */
-	private Stack<Stream> streamStack;
 	/** The current state. */
 	private int state;
-	/** List of error messages. */
-	private List<String> preprocessorErrorList;
 	/** Current token builder. */
 	private StringBuilder builder;
 	/** Current string end char. */
@@ -108,11 +105,24 @@ public class Lexer
 	public Lexer(LexerKernel kernel, String name, Reader in)
 	{
 		this.kernel = kernel;
-		streamStack = new Stack<Stream>();
+		readerStack = new ReaderStack();
 		state = TYPE_UNKNOWN;
 		builder = new StringBuilder();
-		preprocessorErrorList = new List<String>();
 		pushStream(name, in);
+	}
+	
+	/**
+	 * Creates a new lexer around a reader stack.
+	 * @param kernel the kernel to use for this lexer.
+	 * @param readerStack the {@link ReaderStack} to use for this Lexer.
+	 * @since 2.10.0
+	 */
+	public Lexer(LexerKernel kernel, ReaderStack readerStack)
+	{
+		this.kernel = kernel;
+		this.readerStack = readerStack;
+		state = TYPE_UNKNOWN;
+		builder = new StringBuilder();
 	}
 	
 	/**
@@ -120,9 +130,9 @@ public class Lexer
 	 */
 	public String getCurrentStreamName()
 	{
-		if (streamStack.isEmpty())
+		if (readerStack.isEmpty())
 			return "LEXER END";
-		return streamStack.peek().streamName;
+		return readerStack.peek().getStreamName();
 	}
 
 	/**
@@ -131,20 +141,19 @@ public class Lexer
 	 */
 	public int getCurrentLine()
 	{
-		if (streamStack.isEmpty())
+		if (readerStack.isEmpty())
 			return -1;
-		return streamStack.peek().lineNum;
+		return readerStack.peek().getLineNum();
 	}
 
 	/**
-	 * Pushes a stream onto the stream stack.
-	 * This will reset the token state as well.
+	 * Pushes a stream onto the encapsulated reader stack.
 	 * @param name the name of the stream.
 	 * @param in the reader reader.
 	 */
 	public void pushStream(String name, Reader in)
 	{
-		streamStack.push(new Stream(name, in));
+		readerStack.push(name, in);
 	}
 	
 	/**
@@ -153,7 +162,7 @@ public class Lexer
 	 */
 	public Stream currentStream()
 	{
-		return streamStack.peek();
+		return readerStack.peek();
 	}
 	
 	/**
@@ -181,8 +190,8 @@ public class Lexer
 				case TYPE_END_OF_LEXER:
 				{
 					breakloop = true;
-				}
 					break;
+				}
 
 				case TYPE_UNKNOWN:
 				{
@@ -198,7 +207,7 @@ public class Lexer
 							setState(TYPE_END_OF_STREAM);
 							breakloop = true;
 						}
-						streamStack.pop();
+						Common.close(readerStack.pop());
 					}
 					else if (isNewline(c))
 					{
@@ -278,8 +287,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_START_OF_LEXER
+				}
 				
 				case TYPE_ILLEGAL:
 				{
@@ -336,9 +345,8 @@ public class Lexer
 						saveChar(c);
 					}
 
-				}
 					break; // end TYPE_ILLEGAL
-					
+				}
 
 				case TYPE_POINT: // decimal point is seen, but it is a delimiter.
 				{
@@ -400,8 +408,8 @@ public class Lexer
 							breakloop = true;
 						}
 					}
-				}
 					break; // end TYPE_POINT
+				}
 					
 				case TYPE_FLOAT:
 				{
@@ -467,8 +475,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_FLOAT
+				}
 					
 				case TYPE_IDENTIFIER:
 				{
@@ -529,8 +537,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_IDENTIFIER
+				}
 					
 				case TYPE_SPECIAL:
 				{
@@ -587,8 +595,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_IDENTIFIER
+				}
 					
 				case TYPE_HEX_INTEGER0:
 				{
@@ -665,8 +673,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_HEX_INTEGER0
+				}
 
 				case TYPE_HEX_INTEGER1:
 				{
@@ -739,8 +747,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_HEX_INTEGER1
+				}
 
 				case TYPE_HEX_INTEGER:
 				{
@@ -806,8 +814,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_HEX_INTEGER
+				}
 
 				case TYPE_NUMBER:
 				{
@@ -875,8 +883,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_NUMBER
+				}
 
 				case TYPE_EXPONENT:
 				{
@@ -948,8 +956,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_EXPONENT
+				}
 					
 				case TYPE_EXPONENT_POWER:
 				{
@@ -1010,8 +1018,8 @@ public class Lexer
 						setState(TYPE_ILLEGAL);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_EXPONENT_POWER
+				}
 
 				case TYPE_STRING:
 				{
@@ -1111,8 +1119,8 @@ public class Lexer
 					{
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_STRING
+				}
 
 				case TYPE_DELIMITER:
 				{
@@ -1170,8 +1178,8 @@ public class Lexer
 						setDelimBreak(c);
 						breakloop = true;
 					}
-				}
 					break; // end TYPE_DELIMITER
+				}
 					
 				case TYPE_COMMENT:
 				{
@@ -1190,8 +1198,8 @@ public class Lexer
 						setState(TYPE_DELIM_COMMENT);
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_COMMENT
+				}
 
 				case TYPE_DELIM_COMMENT:
 				{
@@ -1215,8 +1223,8 @@ public class Lexer
 						clearCurrentLexeme();
 						saveChar(c);
 					}
-				}
 					break; // end TYPE_DELIM_COMMENT
+				}
 					
 				case TYPE_LINE_COMMENT:
 				{
@@ -1230,8 +1238,9 @@ public class Lexer
 						clearCurrentLexeme();
 						setState(TYPE_UNKNOWN);
 					}
-				}
 					break; // end TYPE_DELIM_COMMENT
+				}
+				
 			}
 			
 		}
@@ -1246,20 +1255,23 @@ public class Lexer
 			{
 				type = TYPE_DELIM_SPACE;
 				lexeme = " ";
-			}
 				break;
+			}
+			
 			case TYPE_DELIM_TAB:
 			{
 				type = TYPE_DELIM_TAB;
 				lexeme = "\t";
-			}
 				break;
+			}
+			
 			case TYPE_DELIM_NEWLINE:
 			{
 				type = TYPE_DELIM_NEWLINE;
 				lexeme = "";
-			}
 				break;
+			}
+			
 			case TYPE_DELIMITER:
 			{
 				type = TYPE_DELIMITER;
@@ -1271,8 +1283,9 @@ public class Lexer
 					type = kernel.getCommentLineTable().get(lexeme);
 				else if (kernel.getDelimTable().containsKey(lexeme))
 					type = kernel.getDelimTable().get(lexeme);
-			}
 				break;
+			}
+			
 			case TYPE_IDENTIFIER:
 			{
 				type = TYPE_IDENTIFIER;
@@ -1280,8 +1293,9 @@ public class Lexer
 					type = kernel.getKeywordTable().get(lexeme);
 				else if (kernel.getCaseInsensitiveKeywordTable().containsKey(lexeme))
 					type = kernel.getCaseInsensitiveKeywordTable().get(lexeme);
-			}
 				break;
+			}
+			
 			case TYPE_SPECIAL:
 				type = specialType;
 				break;
@@ -1301,15 +1315,15 @@ public class Lexer
 	
 	/**
 	 * Reads the next character.
-	 * @return the character read, or {@link #END_OF_LEXER} if no more characters.
+	 * @return the character read, or {@link #END_OF_LEXER} if no more characters, or {@link ReaderStack#END_OF_STREAM} if end of current stream.
 	 * @throws IOException if a token cannot be read by the underlying Reader.
 	 */
 	protected char readChar() throws IOException
 	{
-		if (streamStack.isEmpty())
+		if (readerStack.isEmpty())
 			return END_OF_LEXER;
 
-		return streamStack.peek().readChar();
+		return readerStack.readChar();
 	}
 
 	/**
@@ -1409,7 +1423,7 @@ public class Lexer
 	 */
 	protected Token makeToken(int type, String lexeme)
 	{
-		return new Token(streamStack.peek().streamName, lexeme, streamStack.peek().line, streamStack.peek().lineNum, type);
+		return new Token(readerStack.peek().getStreamName(), lexeme, readerStack.peek().getLine(), readerStack.peek().getLineNum(), type);
 	}
 
 	/**
@@ -1599,13 +1613,13 @@ public class Lexer
 	}
 	
 	/**
-	 * Checks if a char equals {@link #END_OF_STREAM}.
+	 * Checks if a char equals {@link ReaderStack#END_OF_STREAM}.
 	 * @param c the character input.
 	 * @return true if so, false if not.
 	 */
 	protected boolean isStreamEnd(char c)
 	{
-		return c == END_OF_STREAM;
+		return c == ReaderStack.END_OF_STREAM;
 	}
 
 	/**
@@ -1628,35 +1642,6 @@ public class Lexer
 		return c == NEWLINE;
 	}
 
-	/**
-	 * Adds a preprocessor error message to error list along with the current token's information
-	 * (like line number, etc.).
-	 * @param errorMessage the error message.
-	 * @param lexeme the current lexeme.
-	 */
-	protected void addPreprocessorErrorMessage(String errorMessage, String lexeme)
-	{
-		String error = "("+getCurrentStreamName()+") " +
-			"Line "+(streamStack.peek().lineNum)+
-			", Token \""+lexeme+
-			"\": "+errorMessage;
-		
-		preprocessorErrorList.add(error);
-	}
-
-	/**
-	 * Gets the list of error messages.
-	 * @return an array of error messages.
-	 */
-	public String[] getErrorMessages()
-	{
-		String[] out = new String[preprocessorErrorList.size()];
-		int i = 0;
-		for (String s : preprocessorErrorList)
-			out[i++] = s;
-		return out;
-	}
-	
 	/**
 	 * Lexer token object.
 	 */
@@ -1727,68 +1712,6 @@ public class Lexer
 		{
 			return "TOKEN ("+streamName+") id: "+type+"\t Line: "+tokenLine+"\tLexeme: "+lexeme;
 		}
-	}
-	
-	/**
-	 * Stream encapsulation object.
-	 */
-	protected class Stream
-	{
-		/** Name of the stream. */
-		private String streamName;
-		/** The InputStreamReader. */
-		private BufferedReader reader;
-		/** The current line. */
-		private String line;
-		/** The current line number. */
-		private int lineNum;
-		/** The current character number. */
-		private int charNum;
-
-		/**
-		 * Creates a new stream.
-		 * @param name the stream name.
-		 * @param in the reader used.
-		 */
-		protected Stream(String name, Reader in)
-		{
-			streamName = name;
-			reader = new BufferedReader(in);
-			line = null;
-			lineNum = 0;
-			charNum = 0;
-		}
-		
-		/**
-		 * @return the stream name.
-		 */
-		public String getStreamName()
-		{
-			return streamName;
-		}
-		
-		/**
-		 * Reads a character from the stream.
-		 * @return the read character or {@link Lexer#END_OF_STREAM} if no more characters.
-		 * @throws IOException if a character cannot be read.
-		 */
-		public char readChar() throws IOException
-		{
-			if (line == null || charNum == line.length())
-			{
-				
-				line = reader.readLine();
-				lineNum++;
-				if (line != null)
-					line += '\n';
-				charNum = 0;
-			}
-			if (line != null)
-				return line.charAt(charNum++); 
-			else
-				return END_OF_STREAM; 
-		}
-		
 	}
 	
 }
