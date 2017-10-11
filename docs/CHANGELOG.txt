@@ -1,6 +1,6 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
-Slated for 2.10.0
+Changed in 2.10.0
 =================
 
 - Added: ReaderStack. Separated out of Lexer.
