@@ -1,7 +1,7 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
 
-Slated for 2.10.1
+Changed in 2.10.1
 =================
 
 - CommonLexer now ignores directives starting with "#!" so you can write
