@@ -1,5 +1,15 @@
 Common Lang (C) Black Rook Software, All rights reserved.
 
+
+Slated for 2.10.1
+=================
+
+- CommonLexer now ignores directives starting with "#!" so you can write
+  parsers for UNIX interpreter executables.
+- CommonLexerKernel now includes all characters in specially-delimited 
+  tokens except whitespace.
+
+
 Changed in 2.10.0
 =================
 
@@ -7,7 +17,6 @@ Changed in 2.10.0
 - Changed: Lexers can now the wrapped around separate ReaderStacks.
 - Changed: Moved preprocessor error stuff to the CommonLexer from Lexer - 
   that's the only thing that used it.
-
 
 Changed in 2.9.1
 ================

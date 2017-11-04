@@ -36,6 +36,7 @@ import com.blackrook.commons.list.List;
  * <li><b>#ifndef [Identifier]</b> - includes the following lines if the identifier is NOT defined.</li>
  * <li><b>#endif</b> - terminates #ifdef/#ifndef blocks.</li>
  * </ul>
+ * As of <code>2.10.1</code>, directives and lines starting with <code>#!</code> are ignored.  
  * @author Matthew Tropiano
  */
 public class CommonLexer extends Lexer
@@ -109,7 +110,7 @@ public class CommonLexer extends Lexer
 		else
 			token = super.nextToken();
 		
-		// newline character.
+		// EOF character.
 		if (token == null)
 			return null;
 		
@@ -131,7 +132,10 @@ public class CommonLexer extends Lexer
 					{
 						MacroSet macro = defineTable.get(token.getLexeme());
 						for (int i = macro.tokenList.length-1; i >= 0; i--)
-							tokenStack.push(macro.tokenList[i]);
+						{
+							Token macroToken = macro.tokenList[i];
+							tokenStack.push(new Token(getCurrentStreamName() + "[DEFINE MACRO]", macroToken.getLexeme(), token.getLineText(), token.getLine(), macroToken.getType()));
+						}
 						return nextToken();
 					}
 				}
@@ -139,6 +143,20 @@ public class CommonLexer extends Lexer
 			}
 			
 			return token;
+		}
+
+		// UNIX executable hashbang
+		else if (token.getLexeme().startsWith("#!"))
+		{
+			// skip line
+			int line = token.getLine();
+			Token t;
+			while ((t = nextToken()) != null && line == t.getLine())
+			{
+				// Do nothing.
+			}
+			
+			return t;
 		}
 		
 		// #include

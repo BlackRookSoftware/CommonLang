@@ -578,18 +578,15 @@ public class Lexer
 					}
 					else if (isSpecialStart(c))
 					{
-						setDelimBreak(c);
-						breakloop = true;
+						saveChar(c);
 					}
 					else if (isStringStart(c))
 					{
-						setDelimBreak(c);
-						breakloop = true;
+						saveChar(c);
 					}
 					else if (isDelimiterStart(c))
 					{
-						setDelimBreak(c);
-						breakloop = true;
+						saveChar(c);
 					}
 					else if (isLetter(c))
 					{
@@ -1662,7 +1659,7 @@ public class Lexer
 		private int tokenLine;
 		private int type;
 		
-		private Token(String streamName, String lexeme, String lineText, int tokenLine, int type)
+		protected Token(String streamName, String lexeme, String lineText, int tokenLine, int type)
 		{
 			this.streamName = streamName;
 			this.lexeme = lexeme;
