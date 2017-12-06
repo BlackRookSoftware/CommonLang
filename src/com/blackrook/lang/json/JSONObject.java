@@ -919,7 +919,13 @@ public class JSONObject
 			case STRING:
 			{
 				if (type.isEnum())
-					return type.cast(getEnumInstance(jsonObject.getString(), (Class<Enum>)type));
+				{
+					try {
+						return (T)type.cast(Enum.valueOf((Class<Enum>)type, jsonObject.getString()));
+					} catch (IllegalArgumentException e) {
+						return null;
+					}
+				}
 				else if (type == String.class)
 					return type.cast(jsonObject.getString());
 				else if (type == Object.class)
@@ -987,16 +993,4 @@ public class JSONObject
 		}
 	}
 
-	/**
-	 * Returns the enum instance of a class given class and name, or null if not a valid name.
-	 */
-	private static <T extends Enum<T>> T getEnumInstance(String value, Class<T> enumClass)
-	{
-		try {
-			return Enum.valueOf(enumClass, value);
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
-	}
-	
 }
