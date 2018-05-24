@@ -9,6 +9,7 @@ package com.blackrook.lang.json;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
@@ -90,7 +91,7 @@ public class JSONObject
 				if ((out = (JSONConverter<E>)REGISTERED_CONVERTERS.get(clazz)) == null)
 				{
 					try {
-						out = (JSONConverter<E>)ajsonType.converter().newInstance();
+						out = (JSONConverter<E>)ajsonType.converter().getDeclaredConstructor().newInstance();
 						setConverter(clazz, out);
 					} catch (Throwable e) {
 						throw new RuntimeException(e);
@@ -758,31 +759,31 @@ public class JSONObject
 			return applyToObject(Reflect.create(clazz));
 		
 		if (clazz == Boolean.TYPE)
-			return (T)new Boolean(getBoolean());
+			return (T)Boolean.valueOf(getBoolean());
 		else if (clazz == Boolean.class)
 			return clazz.cast(getBoolean());
 		else if (clazz == Byte.TYPE)
-			return (T)new Byte(getByte());
+			return (T)Byte.valueOf(getByte());
 		else if (clazz == Byte.class)
 			return clazz.cast(getByte());
 		else if (clazz == Short.TYPE)
-			return (T)new Short(getShort());
+			return (T)Short.valueOf(getShort());
 		else if (clazz == Short.class)
 			return clazz.cast(getShort());
 		else if (clazz == Integer.TYPE)
-			return (T)new Integer(getInt());
+			return (T)Integer.valueOf(getInt());
 		else if (clazz == Integer.class)
 			return clazz.cast(getInt());
 		else if (clazz == Float.TYPE)
-			return (T)new Float(getFloat());
+			return (T)Float.valueOf(getFloat());
 		else if (clazz == Float.class)
 			return clazz.cast(getFloat());
 		else if (clazz == Long.TYPE)
-			return (T)new Long(getLong());
+			return (T)Long.valueOf(getLong());
 		else if (clazz == Long.class)
 			return clazz.cast(getLong());
 		else if (clazz == Double.TYPE)
-			return (T)new Double(getDouble());
+			return (T)Double.valueOf(getDouble());
 		else if (clazz == Double.class)
 			return clazz.cast(getDouble());
 		
@@ -861,7 +862,7 @@ public class JSONObject
 			case BOOLEAN:
 			{
 				if (type == Boolean.TYPE)
-					return (T)new Boolean(jsonObject.getBoolean());
+					return (T)Boolean.valueOf(jsonObject.getBoolean());
 				else if (type == Boolean.class)
 					return type.cast(jsonObject.getBoolean());
 				else if (type == Object.class)
@@ -873,31 +874,31 @@ public class JSONObject
 			case NUMBER:
 			{
 				if (type == Boolean.TYPE)
-					return (T)new Boolean(jsonObject.getBoolean());
+					return (T)Boolean.valueOf(jsonObject.getBoolean());
 				else if (type == Boolean.class)
 					return type.cast(jsonObject.getBoolean());
 				else if (type == Byte.TYPE)
-					return (T)new Byte(jsonObject.getByte());
+					return (T)Byte.valueOf(jsonObject.getByte());
 				else if (type == Byte.class)
 					return type.cast(jsonObject.getByte());
 				else if (type == Short.TYPE)
-					return (T)new Short(jsonObject.getShort());
+					return (T)Short.valueOf(jsonObject.getShort());
 				else if (type == Short.class)
 					return type.cast(jsonObject.getShort());
 				else if (type == Integer.TYPE)
-					return (T)new Integer(jsonObject.getInt());
+					return (T)Integer.valueOf(jsonObject.getInt());
 				else if (type == Integer.class)
 					return type.cast(jsonObject.getInt());
 				else if (type == Float.TYPE)
-					return (T)new Float(jsonObject.getFloat());
+					return (T)Float.valueOf(jsonObject.getFloat());
 				else if (type == Float.class)
 					return type.cast(jsonObject.getFloat());
 				else if (type == Long.TYPE)
-					return (T)new Long(jsonObject.getLong());
+					return (T)Long.valueOf(jsonObject.getLong());
 				else if (type == Long.class)
 					return type.cast(jsonObject.getLong());
 				else if (type == Double.TYPE)
-					return (T)new Double(jsonObject.getDouble());
+					return (T)Double.valueOf(jsonObject.getDouble());
 				else if (type == Double.class)
 					return type.cast(jsonObject.getDouble());
 				else if (type == Object.class)
@@ -906,11 +907,11 @@ public class JSONObject
 					{
 						long ln = jsonObject.getLong();
 						if (ln >= (long)Integer.MIN_VALUE && ln <= (long)Integer.MAX_VALUE)
-							return type.cast(new Integer(jsonObject.getInt()));
-						return type.cast(new Long(jsonObject.getLong()));
+							return type.cast(Integer.valueOf(jsonObject.getInt()));
+						return type.cast(Long.valueOf(jsonObject.getLong()));
 					}
 					else
-						return type.cast(new Double(jsonObject.getDouble()));
+						return type.cast(Double.valueOf(jsonObject.getDouble()));
 				}
 				else
 					throw new JSONConversionException("Member "+memberName+" is numerically typed; target is not a numeric type.");
@@ -967,7 +968,7 @@ public class JSONObject
 				// Objects.
 				T out = null;
 				try {
-					out = type.newInstance();
+					out = type.getDeclaredConstructor().newInstance();
 				} catch (InstantiationException e) {
 					throw new JSONConversionException("Member "+memberName+" cannot be converted; no nullary constructor or type is not instantiable.", e);
 				} catch (IllegalAccessException e) {
@@ -975,7 +976,13 @@ public class JSONObject
 				} catch (ExceptionInInitializerError e) {
 					throw new JSONConversionException("Member "+memberName+" cannot be converted; problem occurred during instantiation.", e);
 				} catch (SecurityException e) {
-					throw new JSONConversionException("Member "+memberName+" cannot be converted. Cannot access constructor.", e);
+					throw new JSONConversionException("Member "+memberName+" cannot be converted. Cannot access default constructor.", e);
+				} catch (IllegalArgumentException e) {
+					throw new JSONConversionException("Member "+memberName+" cannot be converted. Internal error.", e);
+				} catch (InvocationTargetException e) {
+					throw new JSONConversionException("Member "+memberName+" cannot be converted. Internal error.", e);
+				} catch (NoSuchMethodException e) {
+					throw new JSONConversionException("Member "+memberName+" cannot be converted. No default constructor.", e);
 				}
 				// whoa. recursive-ish!
 				jsonObject.applyToObject(out);
