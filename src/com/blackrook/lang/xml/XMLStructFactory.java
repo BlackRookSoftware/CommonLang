@@ -10,13 +10,15 @@ package com.blackrook.lang.xml;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.blackrook.commons.linkedlist.Stack;
 
@@ -33,14 +35,15 @@ public final class XMLStructFactory
 	 * @return a new XMLStruct parsed from the input.
 	 * @throws IOException if a read error happens.
 	 * @throws SAXException if a parse error happens.
+	 * @throws ParserConfigurationException 
 	 */
-	public static XMLStruct readXML(InputStream in) throws IOException, SAXException
+	public static XMLStruct readXML(InputStream in) throws IOException, SAXException, ParserConfigurationException
 	{
-		XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+		SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+		InputSource is = new InputSource(in);
 		XMLSAXHandler handler = new XMLSAXHandler();
-		xmlReader.setContentHandler(handler);
-		xmlReader.setErrorHandler(handler);
-		xmlReader.parse(new InputSource(in));
+		parser.parse(is, handler);
+
 		return handler.structStack.peek();
 	}
 	
@@ -101,7 +104,7 @@ public final class XMLStructFactory
 		{
 			throw new SAXException(e);
 		}
-
-
+		
 	}
+	
 }
