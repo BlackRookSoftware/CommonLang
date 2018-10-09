@@ -9,8 +9,8 @@ package com.blackrook.lang.path;
 
 import java.io.File;
 
-import com.blackrook.commons.Common;
 import com.blackrook.commons.list.List;
+import com.blackrook.commons.util.ObjectUtils;
 
 /**
  * A pattern that is born from an Apache-like path string (with wildcards).
@@ -66,7 +66,7 @@ public class PathPattern
 	{
 		final char SEPARATOR = File.separatorChar;
 		
-		if (Common.isEmpty(pathPattern))
+		if (ObjectUtils.isEmpty(pathPattern))
 			throw new PatternParseException("Input pattern cannot be empty or null.");
 
 		if (pathPattern.charAt(pathPattern.length() - 1) == '/' || pathPattern.charAt(pathPattern.length() - 1) == SEPARATOR)
@@ -85,7 +85,7 @@ public class PathPattern
 
 			if (end == pathPattern.length())
 			{
-				if (Common.isEmpty(file))
+				if (ObjectUtils.isEmpty(file))
 					throw new PatternParseException("A file cannot have an empty name or pattern."); 
 				else if (ANY_DIRECTORY_PATH.equals(file))
 					out.patternNodes.add(new Node(Node.Type.ANY_DIRECTORY, file));
@@ -96,7 +96,7 @@ public class PathPattern
 			}
 			else
 			{
-				if (Common.isEmpty(file))
+				if (ObjectUtils.isEmpty(file))
 					throw new PatternParseException("A path folder cannot have an empty name or pattern."); 
 				else if (ANY_DIRECTORY_PATH.equals(file))
 					out.patternNodes.add(new Node(Node.Type.ANY_DIRECTORY, file));
@@ -139,7 +139,7 @@ public class PathPattern
 	 */
 	public boolean matches(String path, boolean caseInsensitive)
 	{
-		if (Common.isEmpty(path))
+		if (ObjectUtils.isEmpty(path))
 			return false;
 
 		int start = 0;
@@ -156,7 +156,7 @@ public class PathPattern
 
 			if (end == path.length())
 			{
-				if (Common.isEmpty(file))
+				if (ObjectUtils.isEmpty(file))
 					throw new PatternParseException("The target path cannot have an empty file/folder name."); 
 				else if (file.contains("*") || file.contains("?"))
 					throw new PatternParseException("The target path cannot contain any wildcard characters."); 
@@ -184,7 +184,7 @@ public class PathPattern
 			}
 			else
 			{
-				if (Common.isEmpty(file))
+				if (ObjectUtils.isEmpty(file))
 					throw new PatternParseException("The target path cannot have an empty file/folder name."); 
 				else if (file.contains("*") || file.contains("?"))
 					throw new PatternParseException("The target path cannot contain any wildcard characters."); 

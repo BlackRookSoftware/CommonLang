@@ -11,7 +11,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import com.blackrook.commons.Common;
+import com.blackrook.commons.util.IOUtils;
+import com.blackrook.commons.util.ValueUtils;
 import com.blackrook.lang.ReaderStack.Stream;
 
 import static com.blackrook.lang.LexerKernel.*;
@@ -39,7 +40,7 @@ import static com.blackrook.lang.LexerKernel.*;
  */
 public class Lexer
 {
-	public static boolean DEBUG = Common.parseBoolean(System.getProperty(Lexer.class.getName()+".debug"), false);
+	public static boolean DEBUG = ValueUtils.parseBoolean(System.getProperty(Lexer.class.getName()+".debug"), false);
 	
 	/** Lexer end-of-stream char. */
 	public static final char END_OF_LEXER = '\uffff';
@@ -216,7 +217,7 @@ public class Lexer
 							setState(TYPE_END_OF_STREAM);
 							breakloop = true;
 						}
-						Common.close(readerStack.pop());
+						IOUtils.close(readerStack.pop());
 					}
 					else if (isNewline(c))
 					{

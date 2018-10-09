@@ -11,10 +11,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
 
-import com.blackrook.commons.Common;
 import com.blackrook.commons.ObjectPair;
 import com.blackrook.commons.hash.CaseInsensitiveHashMap;
 import com.blackrook.commons.list.List;
+import com.blackrook.commons.util.ValueUtils;
 
 /**
  * An object that holds XML data as a data hierarchy.  
@@ -278,7 +278,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public boolean getAttributeBoolean(String attr)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return Common.parseBoolean(out);
+		return ValueUtils.parseBoolean(out);
 	}
 	
 	/**
@@ -291,7 +291,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public boolean getAttributeBoolean(String attr, boolean def)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return out != null ? Common.parseBoolean(out) : def;
+		return out != null ? ValueUtils.parseBoolean(out) : def;
 	}
 	
 	/**
@@ -303,7 +303,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public byte getAttributeByte(String attr)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return Common.parseByte(out);
+		return ValueUtils.parseByte(out);
 	}
 	
 	/**
@@ -316,7 +316,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public byte getAttributeByte(String attr, byte def)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return out != null ? Common.parseByte(out) : def;
+		return out != null ? ValueUtils.parseByte(out) : def;
 	}
 	
 	/**
@@ -328,7 +328,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public short getAttributeShort(String attr)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return Common.parseShort(out);
+		return ValueUtils.parseShort(out);
 	}
 	
 	/**
@@ -341,7 +341,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public short getAttributeShort(String attr, short def)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return out != null ? Common.parseShort(out) : def;
+		return out != null ? ValueUtils.parseShort(out) : def;
 	}
 	
 	/**
@@ -353,7 +353,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public char getAttributeChar(String attr)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return Common.parseChar(out);
+		return ValueUtils.parseChar(out);
 	}
 	
 	/**
@@ -366,7 +366,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public char getAttributeChar(String attr, char def)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return out != null ? Common.parseChar(out) : def;
+		return out != null ? ValueUtils.parseChar(out) : def;
 	}
 	
 	/**
@@ -378,7 +378,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public int getAttributeInt(String attr)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return Common.parseInt(out);
+		return ValueUtils.parseInt(out);
 	}
 	
 	/**
@@ -391,7 +391,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public int getAttributeInt(String attr, int def)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return out != null ? Common.parseInt(out) : def;
+		return out != null ? ValueUtils.parseInt(out) : def;
 	}
 	
 	/**
@@ -403,7 +403,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public long getAttributeLong(String attr)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return Common.parseLong(out);
+		return ValueUtils.parseLong(out);
 	}
 	
 	/**
@@ -416,7 +416,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public long getAttributeLong(String attr, long def)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return out != null ? Common.parseLong(out) : def;
+		return out != null ? ValueUtils.parseLong(out) : def;
 	}
 	
 	/**
@@ -428,7 +428,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public float getAttributeFloat(String attr)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return Common.parseFloat(out);
+		return ValueUtils.parseFloat(out);
 	}
 	
 	/**
@@ -441,7 +441,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public float getAttributeFloat(String attr, float def)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return out != null ? Common.parseFloat(out) : def;
+		return out != null ? ValueUtils.parseFloat(out) : def;
 	}
 	
 	/**
@@ -453,7 +453,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public double getAttributeDouble(String attr)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return Common.parseDouble(out);
+		return ValueUtils.parseDouble(out);
 	}
 	
 	/**
@@ -466,7 +466,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	public double getAttributeDouble(String attr, double def)
 	{
 		String out = attributes != null ? attributes.get(attr) : null;
-		return out != null ? Common.parseDouble(out) : def;
+		return out != null ? ValueUtils.parseDouble(out) : def;
 	}
 
 	/**
@@ -595,7 +595,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 */
 	public byte getValueByte()
 	{
-		return Common.parseByte(value);
+		return ValueUtils.parseByte(value);
 	}
 
 	/**
@@ -603,7 +603,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 */
 	public short getValueShort()
 	{
-		return Common.parseShort(value);
+		return ValueUtils.parseShort(value);
 	}
 
 	/**
@@ -611,7 +611,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 */
 	public char getValueChar()
 	{
-		return Common.parseChar(value);
+		return ValueUtils.parseChar(value);
 	}
 
 	/**
@@ -619,7 +619,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 */
 	public int getValueInt()
 	{
-		return Common.parseInt(value);
+		return ValueUtils.parseInt(value);
 	}
 
 	/**
@@ -627,7 +627,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 */
 	public long getValueLong()
 	{
-		return Common.parseLong(value);
+		return ValueUtils.parseLong(value);
 	}
 
 	/**
@@ -635,7 +635,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 */
 	public float getValueFloat()
 	{
-		return Common.parseFloat(value);
+		return ValueUtils.parseFloat(value);
 	}
 
 	/**
@@ -643,7 +643,7 @@ public class XMLStruct implements Iterable<XMLStruct>
 	 */
 	public double getValueDouble()
 	{
-		return Common.parseDouble(value);
+		return ValueUtils.parseDouble(value);
 	}
 
 	@Override

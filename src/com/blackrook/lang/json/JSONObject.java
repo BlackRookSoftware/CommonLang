@@ -13,12 +13,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
-import com.blackrook.commons.Common;
 import com.blackrook.commons.Reflect;
 import com.blackrook.commons.TypeProfile;
 import com.blackrook.commons.TypeProfile.MethodSignature;
 import com.blackrook.commons.hash.HashMap;
 import com.blackrook.commons.list.List;
+import com.blackrook.commons.util.ObjectUtils;
+import com.blackrook.commons.util.ValueUtils;
 import com.blackrook.lang.json.annotation.JSONIgnore;
 import com.blackrook.lang.json.annotation.JSONType;
 
@@ -377,7 +378,7 @@ public class JSONObject
 		else if (value instanceof Number)
 			return ((Number)value).byteValue();
 		else if (value instanceof String)
-			return Common.parseByte((String)value, (byte)0);
+			return ValueUtils.parseByte((String)value, (byte)0);
 		else
 			return 0;
 	}
@@ -397,7 +398,7 @@ public class JSONObject
 		else if (value instanceof Number)
 			return ((Number)value).shortValue();
 		else if (value instanceof String)
-			return Common.parseShort((String)value, (short)0);
+			return ValueUtils.parseShort((String)value, (short)0);
 		else
 			return 0;
 	}
@@ -417,7 +418,7 @@ public class JSONObject
 		else if (value instanceof Number)
 			return ((Number)value).intValue();
 		else if (value instanceof String)
-			return Common.parseInt((String)value, 0);
+			return ValueUtils.parseInt((String)value, 0);
 		else
 			return 0;
 	}
@@ -437,7 +438,7 @@ public class JSONObject
 		else if (value instanceof Number)
 			return ((Number)value).floatValue();
 		else if (value instanceof String)
-			return Common.parseFloat((String)value, 0f);
+			return ValueUtils.parseFloat((String)value, 0f);
 		else
 			return 0f;
 	}
@@ -457,7 +458,7 @@ public class JSONObject
 		else if (value instanceof Number)
 			return ((Number)value).longValue();
 		else if (value instanceof String)
-			return Common.parseLong((String)value, 0L);
+			return ValueUtils.parseLong((String)value, 0L);
 		else
 			return 0L;
 	}
@@ -477,7 +478,7 @@ public class JSONObject
 		else if (value instanceof Number)
 			return ((Number)value).doubleValue();
 		else if (value instanceof String)
-			return Common.parseDouble((String)value, 0.0);
+			return ValueUtils.parseDouble((String)value, 0.0);
 		else
 			return 0.0;
 	}
@@ -588,7 +589,7 @@ public class JSONObject
 	 */
 	public void addMember(String name, JSONObject object)
 	{
-		if (Common.isEmpty(name))
+		if (ObjectUtils.isEmpty(name))
 			throw new IllegalArgumentException("Member name is empty, null, or whitespace.");
 
 		if (isNull())

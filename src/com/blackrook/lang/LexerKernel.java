@@ -9,10 +9,10 @@ package com.blackrook.lang;
 
 import java.text.DecimalFormatSymbols;
 
-import com.blackrook.commons.Common;
 import com.blackrook.commons.hash.CaseInsensitiveHashMap;
 import com.blackrook.commons.hash.HashMap;
 import com.blackrook.commons.list.SortedList;
+import com.blackrook.commons.util.ObjectUtils;
 
 /**
  * This is a info kernel that tells a {@link Lexer} how to interpret certain characters and identifiers.
@@ -177,7 +177,7 @@ public class LexerKernel
 	
 	private void keyCheck(String name)
 	{
-		if (Common.isEmpty(name))
+		if (ObjectUtils.isEmpty(name))
 			throw new IllegalArgumentException("String cannot be null nor empty.");
 	}
 
