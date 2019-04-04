@@ -1,12 +1,12 @@
 # Black Rook Common Lang
 
-Copyright (c) 2009-2016 Black Rook Software. All rights reserved.  
+Copyright (c) 2009-2019 Black Rook Software. All rights reserved.  
 [http://blackrooksoftware.com/projects.htm?name=commonlang](http://blackrooksoftware.com/projects.htm?name=commonlang)  
 [https://github.com/BlackRookSoftware/CommonLang](https://github.com/BlackRookSoftware/CommonLang)
 
 ### Required Libraries
 
-Black Rook Commons 2.17.0+  
+Black Rook Commons 2.32.0+  
 [https://github.com/BlackRookSoftware/Common](https://github.com/BlackRookSoftware/Common)
 
 ### Introduction
